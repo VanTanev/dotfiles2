@@ -1,6 +1,9 @@
 " Setting some decent VIM settings for programming
 
 set shell=bash
+execute pathogen#infect()
+:call pathogen#helptags()
+filetype plugin indent on
 
 set ai                          " set auto-indenting on for programming
 set showmatch                   " automatically show matching brackets. works like it does in bbedit.
@@ -9,11 +12,11 @@ set ruler                       " show the cursor position all the time
 set laststatus=2                " make the last line where the status is two lines deep so you can see status always
 set backspace=indent,eol,start  " make that backspace key work the way it should
 set nocompatible                " vi compatible is LAME
-set background=light            " Use colours that work well on a dark background (Console is usually black)
 set showmode                    " show the current mode
 syntax on                       " turn syntax highlighting on by default
-execute pathogen#infect()
-filetype plugin indent on
+set background=light            " Use light background for solarized
+let g:solarized_termcolors=256
+colorscheme solarized
 
 " Show EOL type and last modified timestamp, right after the filename
 set statusline=%<%F%h%m%r\ [%{&ff}]\ (%{strftime(\"%H:%M\ %d/%m/%Y\",getftime(expand(\"%:p\")))})%=%l,%c%V\ %P
