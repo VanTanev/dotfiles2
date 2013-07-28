@@ -1,0 +1,15 @@
+*
+
+!.vim/bundle
+
+!bin/run-command-on-git-revisions
+!.vimrc
+!.bashrc
+!.gitconfig
+!.gitignore
+!.gitmodules
+!.githelpers
+!.git-flow-completion.sh
+!.bash-ssh-agent.sh
+!z.sh
+
