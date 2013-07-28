@@ -41,7 +41,7 @@
     amend = commit --amend
     famend = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
     h   = !git head
-    l   = "!source ~/.githelpers && pretty_git_log"
+    l   = "!. ~/.githelpers && pretty_git_log"
     la  = !git l --all
     r   = !git l -20
     ra  = !git r --all
