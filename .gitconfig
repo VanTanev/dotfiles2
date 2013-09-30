@@ -1,37 +1,37 @@
 [user]
-	name = IvanTanev
-	email = vankata.t@gmail.com
-[color]
-	branch = auto
-	status = auto
-	diff   = auto
-	ui     = auto
-[branch]
-	autosetupmerge = true
-[color "branch"]
-	current = yellow reverse
-	local   = yellow
-	remote  = green
-[color "status"]
-	added	= yellow
-	changed = green
-	untracked = cyan
+    name = IvanTanev
+    email = vankata.t@gmail.com
 
-# test
+[color]
+    branch = auto
+    status = auto
+    diff   = auto
+    ui     = auto
+[branch]
+    autosetupmerge = true
+[color "branch"]
+    current = yellow reverse
+    local   = yellow
+    remote  = green
+[color "status"]
+    added    = yellow
+    changed = green
+    untracked = cyan
+
 [core]
-	whitespace=fix;-indent-with-non-tab,trailing-space,cr-at-eol
-	autocrlf = input
-	editor = vim
+    whitespace=fix;-indent-with-non-tab,trailing-space,cr-at-eol
+    autocrlf = input
+    editor = vim
 
 [alias]
-    st 	= status -sb
+    st  = status -sb
     aa  = add --all
-    ci	= commit
-    co	= checkout
-    df	= diff
-    dfw	= diff --word-diff
+    ci  = commit
+    co  = checkout
+    df  = diff
+    dfw = diff --word-diff
     dc  = diff --cached
-    dcw  = diff --cached --word-diff
+    dcw = diff --cached --word-diff
     ig  =!([ ! -e .gitignore ] && touch .gitignore) | echo $1 >>.gitignore
     alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
     amend = commit --amend
@@ -44,13 +44,13 @@
     ff  = merge --ff-only
     pullff = pull --ff-only
     noff = merge --no-ff
-    fp = fetch --prune
+    fp  = fetch --prune
     po  = push origin
     pom = push origin master
     pod = push origin develop
-    br	= branch
+    br  = branch
     tagdate = !git tag `date "+%Y%m%d%H%M"`
-	
+
     # Show status and diff of dirty submodules
     subdiff = !"git submodule foreach --recursive --quiet '[ \"$(git status -s)\" ] && echo \"--- $name ---\" && git status -s && git diff --unified=1 || :'"
 
@@ -82,6 +82,6 @@
     searchcommits = "!f() { query=\"$1\"; shift; git log -S\"$query\" \"$@\"; }; f \"$@\""
 
 [gui]
-	encoding = utf-8
+    encoding = utf-8
 [push]
-	default = upstream
+    default = upstream
