@@ -26,8 +26,18 @@ cd ~/code
 git clone https://github.com/rupa/z.git
 chmod +x ~/code/z/z.sh
 # also consider moving over your current .z file if possible. it's painful to rebuild :)
-
 # z binary is already referenced from .bash_profile
+
+mkdir -p ~/code/solarize
+cd ~/code/solarize
+
+wget --no-check-certificate https://raw.github.com/seebi/dircolors-solarized/master/dircolors.ansi-dark
+mv dircolors.ansi-dark ~/.dircolors
+eval `dircolors ~/.dircolors`
+
+git clone https://github.com/sigurdga/gnome-terminal-colors-solarized.git
+cd gnome-terminal-colors-solarized
+./set_dark.sh
 
 # for the c alias (syntax highlighted cat)
 $gimme python python-setuptools
