@@ -4,7 +4,8 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias lla='ls -lA'
 alias l='ls -CF'
-# easy stuff
+
+# easier commands stuff
 alias gi='git'
 alias ack="ack-grep"
 alias g='git'
@@ -18,6 +19,32 @@ if [[ `uname` == MINGW32* ]]; then
     alias irb='irb --noreadline'
 fi
 
-if [[ `uname -a` == *Ubuntu* ]]; then
-    alias gimme='sudo apt-get install -y'
+if hash apt-get 2>/dev/null; then
+   alias gimme='sudo apt-get install -y'
+elif hash yum > /dev/null; then
+   alias gimme='sudo yum install -y'
 fi
+
+# Easier navigation
+alias ..="cd .."
+alias cd..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias -- -="cd -"
+
+# `cat` with beautiful colors. requires Pygments installed.
+# sudo easy_install Pygments
+alias c='pygmentize -O style=monokai -f console256 -g'
+
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
+
+# Canonical hex dump; some systems have this symlinked
+type -t hd > /dev/null || alias hd="hexdump -C"
+
+# One of @janmoesen’s ProTip™s
+for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+    alias "$method"="lwp-request -m '$method'"
+done
