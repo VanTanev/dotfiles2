@@ -1,0 +1,23 @@
+export EDITOR=vim
+
+# Erase duplicates in history
+export HISTCONTROL=erasedups
+# Store 10k history entries
+export HISTSIZE=10000
+# Append to the history file when exiting instead of overwriting it
+shopt -s histappend
+# Make some commands not show up in history
+export HISTIGNORE="ls:ls *:cd:cd -:pwd;exit:date:* --help"
+
+# Prefer US English and use UTF-8
+export LANG="en_US"
+export LC_ALL="en_US.UTF-8"
+
+# Highlight section titles in manual pages
+export LESS_TERMCAP_md="$ORANGE"
+
+# Don’t clear the screen after quitting a manual page
+export MANPAGER="less -X"
+
+# Always enable colored `grep` output
+export GREP_OPTIONS="--color=auto"
