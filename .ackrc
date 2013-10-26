@@ -11,3 +11,7 @@
 --type-set=MARKDOWN=md,mkd,markdown
 --type-set=RDOC=rdoc
 
+# ignore some stuff we usually wouldn't want
+--ignore-dir=log
+--ignore-dir=tmp
+--ignore-dir=vendor
