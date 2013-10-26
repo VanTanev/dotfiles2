@@ -1,16 +1,3 @@
-*
-
-!.vim/bundle/*
-
-!bin/run-command-on-git-revisions
-!.vimrc
-!.bashrc
-!.ackrc
-!.gitconfig
-!.gitignore
-!.gitmodules
-!.githelpers
-!.git-flow-completion.sh
-!.bash-ssh-agent.sh
-!z.sh
+# Compiled Python files
+*.pyc
 
