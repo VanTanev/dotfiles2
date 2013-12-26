@@ -4,11 +4,13 @@ set -e
 git submodule init
 git submodule update
 
-
 if hash apt-get 2>/dev/null; then
-   gimme="sudo apt-get install -y"
+    gimme="sudo apt-get install -y"
 elif hash yum > /dev/null; then
-   gimme="sudo yum install -y"
+    gimme="sudo yum install -y"
+elif
+    echo "Could not determine package manager, exiting"
+    exit
 fi
 
 $gimme curl
