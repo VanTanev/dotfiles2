@@ -290,7 +290,11 @@ function! RunTests(filename)
 " Write the file and run tests for the given filename
     :w
     if match(a:filename, '\.feature$') != -1
-        exec ":!script/features " . a:filename
+        if filereadable("script/features")
+            exec ":!script/features " . a:filename
+        else
+            exec ":!cucumber " . a:filename
+        end
     else
         if filereadable("script/test")
             exec ":!script/test " . a:filename
