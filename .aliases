@@ -35,7 +35,7 @@ alias -- -="cd -"
 
 # `cat` with beautiful colors. requires Pygments installed.
 # sudo easy_install Pygments
-alias c='pygmentize -O style=monokai -f console256 -g'
+alias c='pygmentize -O style=solarizeddark -f console256 -g'
 
 # View HTTP traffic
 alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"

@@ -8,9 +8,9 @@ if hash apt-get 2>/dev/null; then
     gimme="sudo apt-get install -y"
 elif hash yum > /dev/null; then
     gimme="sudo yum install -y"
-elif
+else
     echo "Could not determine package manager, exiting"
-    exit
+    exit 1
 fi
 
 $gimme curl
@@ -61,6 +61,7 @@ fi
 # for the c alias (syntax highlighted cat)
 $gimme python python-setuptools
 sudo easy_install Pygments
+sudo easy_install pygments-style-solarized
 
 # setup pathogen
 mkdir -p ~/.vim/autoload ~/.vim/bundle; \
