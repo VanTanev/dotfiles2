@@ -48,3 +48,6 @@ type -t hd > /dev/null || alias hd="hexdump -C"
 for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
     alias "$method"="lwp-request -m '$method'"
 done
+
+# add a convenient shortcut for copying stuff into the clipboard
+alias clip="xclip -i -selection clipboard"
