@@ -28,15 +28,48 @@ if [[ `uname -a` == *Ubuntu* ]]; then
     V=`/usr/bin/lsb_release -rs`; if [ $V \< 12.10 ]; then echo "Good news! Your version of Ubuntu doesn't invade your privacy."; else gsettings set com.canonical.Unity.Lenses remote-content-search none; if [ $V \< 13.10 ]; then sudo apt-get remove -y unity-lens-shopping; else gsettings set com.canonical.Unity.Lenses disabled-scopes "['more_suggestions-amazon.scope', 'more_suggestions-u1ms.scope', 'more_suggestions-populartracks.scope', 'music-musicstore.scope', 'more_suggestions-ebay.scope', 'more_suggestions-ubuntushop.scope', 'more_suggestions-skimlinks.scope']"; fi; if ! grep -q productsearch.ubuntu.com /etc/hosts; then echo -e "\n127.0.0.1 productsearch.ubuntu.com" | sudo tee -a /etc/hosts >/dev/null; fi; echo "All done. Enjoy your privacy."; fi
 fi
 
-# https://github.com/jamiew/git-friendly
-# the `push` command which copies the github compare URL to my clipboard is heaven
-#bash < <( curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
+# gimme a sane build env on Ubuntu
+# https://github.com/sstephenson/ruby-build/wiki#suggested-build-environment
+if [[ `uname -a` == *Ubuntu* ]]; then
+    $gimme autoconf bison build-essential libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev
+    # while we're here, let's get some other necessary stuff
+    $gimme libsqlite3-dev nodejs
+fi
+
+sudo -s <<RUBY_INSTALL
+    if [ ! -e /usr/local/bin/ruby-build ]; then
+        cd /usr/src
+        git clone https://github.com/sstephenson/ruby-build.git
+        cd ruby-build
+        ./install.sh
+        cd -
+    fi
+
+    if [ ! -d /opt/rubies/2.1.0 ]; then
+        mkdir -p /opt/rubies
+        ruby-build 2.1.0 /opt/rubies/2.1.0
+        /opt/rubies/2.1.0/bin/gem install bundler
+    fi
+
+    if [ ! -e /usr/local/share/chruby/chruby.sh ]; then
+        cd /usr/src
+        wget -O chruby-0.3.8.tar.gz https://github.com/postmodern/chruby/archive/v0.3.8.tar.gz
+        tar -xzvf chruby-0.3.8.tar.gz
+        cd chruby-0.3.8
+        make install
+        cd -
+    fi
+RUBY_INSTALL
 
 # https://rvm.io
 # rvm for the rubiess
-if ! hash rvm; then
-    curl -L https://get.rvm.io | bash -s stable --ruby
-fi
+#if ! hash rvm; then
+#    curl -L https://get.rvm.io | bash -s stable --ruby
+#fi
+
+# https://github.com/jamiew/git-friendly
+# the `push` command which copies the github compare URL to my clipboard is heaven
+#bash < <( curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
 
 # https://github.com/rupa/z
 # z, oh how i love you
