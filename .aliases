@@ -10,7 +10,7 @@ alias gi='git'
 alias ack="ack-grep"
 alias g='git'
 alias tu='tar zxvf'
-alias v='vim --remote-silent'
+alias v='vim'
 alias rb='ruby'
 alias r='rails'
 
@@ -51,3 +51,6 @@ done
 
 # add a convenient shortcut for copying stuff into the clipboard
 alias clip="xclip -i -selection clipboard"
+
+# beep!
+alias beep='paplay $BEEP'
