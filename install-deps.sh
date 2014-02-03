@@ -1,5 +1,6 @@
 # up to you (me) if you want to run this as a file or copy paste at your leisure
 set -e
+set -x
 
 git submodule init
 git submodule update
@@ -36,6 +37,7 @@ if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme libsqlite3-dev nodejs
 fi
 
+export RUBY_VERSION="2.0.0-p353"
 sudo -s <<RUBY_INSTALL
     if [ ! -e /usr/local/bin/ruby-build ]; then
         cd /usr/src
@@ -45,10 +47,10 @@ sudo -s <<RUBY_INSTALL
         cd -
     fi
 
-    if [ ! -d /opt/rubies/2.1.0 ]; then
+    if [ ! -d /opt/rubies/$RUBY_VERSION ]; then
         mkdir -p /opt/rubies
-        ruby-build 2.1.0 /opt/rubies/2.1.0
-        /opt/rubies/2.1.0/bin/gem install bundler
+        ruby-build $RUBY_VERSION /opt/rubies/$RUBY_VERSION
+        /opt/rubies/$RUBY_VERSION/bin/gem install bundler
     fi
 
     if [ ! -e /usr/local/share/chruby/chruby.sh ]; then

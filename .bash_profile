@@ -119,5 +119,5 @@ fi
 [[ -s /usr/local/share/chruby/chruby.sh ]] && source /usr/local/share/chruby/chruby.sh
 
 if hash chruby 2>/dev/null; then
-    chruby 2.1.0
+    chruby 2.0.0
 fi
