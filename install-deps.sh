@@ -34,7 +34,7 @@ fi
 if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme autoconf bison build-essential libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev
     # while we're here, let's get some other necessary stuff
-    $gimme libsqlite3-dev nodejs
+    $gimme libmysqlclient-dev libsqlite3-dev nodejs
 fi
 
 export RUBY_VERSION="2.0.0-p353"
