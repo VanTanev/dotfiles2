@@ -13,6 +13,7 @@ alias tu='tar zxvf'
 alias v='vim'
 alias rb='ruby'
 alias r='rails'
+alias be='bundle exec'
 
 # irb is broken under win without this
 if [[ `uname` == MINGW32* ]]; then
