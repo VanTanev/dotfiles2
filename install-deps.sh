@@ -7,15 +7,22 @@ git submodule update
 
 if hash apt-get 2>/dev/null; then
     gimme="sudo apt-get install -y"
-elif hash yum > /dev/null; then
+elif hash yum 2>/dev/null; then
     gimme="sudo yum install -y"
+elif hash brew 2>/dev/null; then
+    gimme="brew install"
 else
     echo "Could not determine package manager, exiting"
     exit 1
 fi
 
 $gimme curl
-$gimme ack-grep
+$gimme wget
+if [[ `uname -a` == *Ubuntu* ]]; then
+    $gimme ack-grep
+else
+    $gimme ack
+fi
 
 # required stuff for Commant-T vim
 if [[ `uname -a` == *Ubuntu* ]]; then
@@ -37,9 +44,10 @@ if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme libmysqlclient-dev libsqlite3-dev nodejs
 fi
 
-export RUBY_VERSION="2.0.0-p353"
+export RUBY_VERSION="2.0.0-p451"
 sudo -s <<RUBY_INSTALL
     if [ ! -e /usr/local/bin/ruby-build ]; then
+    mkdir -p /usr/src
         cd /usr/src
         git clone https://github.com/sstephenson/ruby-build.git
         cd ruby-build
@@ -54,6 +62,7 @@ sudo -s <<RUBY_INSTALL
     fi
 
     if [ ! -e /usr/local/share/chruby/chruby.sh ]; then
+    mkdir -p /usr/src
         cd /usr/src
         wget -O chruby-0.3.8.tar.gz https://github.com/postmodern/chruby/archive/v0.3.8.tar.gz
         tar -xzvf chruby-0.3.8.tar.gz
@@ -85,7 +94,7 @@ if [ ! -d ~/code/z ]; then
 fi
 
 # setup solarized
-if [ ! -d ~/code/solarize ]; then
+if [[ `uname -a` == *Ubuntu* ]] && [ ! -d ~/code/solarize ]; then
     mkdir -p ~/code/solarize
     cd ~/code/solarize
 
@@ -99,9 +108,16 @@ if [ ! -d ~/code/solarize ]; then
 fi
 
 # for the c alias (syntax highlighted cat)
-$gimme python python-setuptools
-sudo easy_install Pygments
-sudo easy_install pygments-style-solarized
+$gimme python
+if [[ `uname -a` == *Ubuntu* ]]; then
+    $gimme python-setuptools
+fi
+
+(set +e; which pygmentize) > /dev/null
+if [ $? -eq 1 ];then
+    sudo easy_install Pygments
+    sudo easy_install pygments-style-solarized
+fi
 
 # setup pathogen
 mkdir -p ~/.vim/autoload ~/.vim/bundle; \

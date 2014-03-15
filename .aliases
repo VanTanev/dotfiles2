@@ -1,5 +1,4 @@
 # some more ls aliases
-alias ls='ls --color=auto'
 alias ll='ls -alF'
 alias la='ls -A'
 alias lla='ls -lA'
@@ -22,8 +21,10 @@ fi
 
 if hash apt-get 2>/dev/null; then
    alias gimme='sudo apt-get install -y'
-elif hash yum > /dev/null; then
+elif hash yum 2>/dev/null; then
    alias gimme='sudo yum install -y'
+elif hash brew 2>/dev/null; then
+   alias gimme='brew install'
 fi
 
 # Easier navigation
