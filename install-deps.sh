@@ -113,13 +113,12 @@ if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme python-setuptools
 fi
 
-(set +e; which pygmentize) > /dev/null
-if [ $? -eq 1 ];then
+if ! hash pygmentize 2>/dev/null;then
     sudo easy_install Pygments
     sudo easy_install pygments-style-solarized
 fi
 
 # setup pathogen
 mkdir -p ~/.vim/autoload ~/.vim/bundle; \
-curl -Sso ~/.vim/autoload/pathogen.vim \
+curl -LSso ~/.vim/autoload/pathogen.vim \
     https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
