@@ -2,9 +2,6 @@
 set -e
 set -x
 
-git submodule init
-git submodule update
-
 if hash apt-get 2>/dev/null; then
     gimme="sudo apt-get install -y"
 elif hash yum 2>/dev/null; then
@@ -16,10 +13,17 @@ else
     exit 1
 fi
 
+$gimme git
+
+git submodule init
+git submodule update
+
 $gimme curl
 $gimme wget
+
 if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme ack-grep
+    $gimme xclip
 else
     $gimme ack
 fi
@@ -42,6 +46,8 @@ if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme autoconf bison build-essential libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev
     # while we're here, let's get some other necessary stuff
     $gimme libmysqlclient-dev libsqlite3-dev nodejs
+    # on Ubuntu we will also want to get the current kernel's headers (Used by virtual machine additions)
+    $gimme linux-headers-`(uname -r)`
 fi
 
 export RUBY_VERSION="2.0.0-p481"
@@ -118,7 +124,7 @@ if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme python-setuptools
 fi
 
-if ! hash pygmentize 2>/dev/null;then
+if ! hash pygmentize 2>/dev/null; then
     sudo easy_install Pygments
     sudo easy_install pygments-style-solarized
 fi
