@@ -44,13 +44,18 @@ if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme libmysqlclient-dev libsqlite3-dev nodejs
 fi
 
-export RUBY_VERSION="2.0.0-p451"
+export RUBY_VERSION="2.0.0-p481"
 sudo -s <<RUBY_INSTALL
     if [ ! -e /usr/local/bin/ruby-build ]; then
-    mkdir -p /usr/src
+        mkdir -p /usr/src
         cd /usr/src
         git clone https://github.com/sstephenson/ruby-build.git
         cd ruby-build
+        ./install.sh
+        cd -
+    else
+        cd /usr/src/ruby-build
+        git pull origin master
         ./install.sh
         cd -
     fi
@@ -62,7 +67,7 @@ sudo -s <<RUBY_INSTALL
     fi
 
     if [ ! -e /usr/local/share/chruby/chruby.sh ]; then
-    mkdir -p /usr/src
+        mkdir -p /usr/src
         cd /usr/src
         wget -O chruby-0.3.8.tar.gz https://github.com/postmodern/chruby/archive/v0.3.8.tar.gz
         tar -xzvf chruby-0.3.8.tar.gz
