@@ -50,7 +50,7 @@ if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme linux-headers-`(uname -r)`
 fi
 
-export RUBY_VERSION="2.0.0-p481"
+export RUBY_VERSION="2.1.2"
 sudo -s <<RUBY_INSTALL
     if [ ! -e /usr/local/bin/ruby-build ]; then
         mkdir -p /usr/src
