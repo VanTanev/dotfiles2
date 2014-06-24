@@ -45,3 +45,7 @@ function extract() {
     fi
 }
 
+# give the latest file in a directory, preserving relative paths
+function latest() {
+  echo $1/$(ls -rt $1 |tail -1);
+}
