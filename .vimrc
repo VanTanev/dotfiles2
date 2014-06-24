@@ -53,6 +53,7 @@ let mapleader=","
 
 " Setting some decent VIM settings for programming
 set ai                          " set auto-indenting on for programming
+set paste                       " do not perform auto-indenting for pasted text
 set showmatch                   " automatically show matching brackets. works like it does in bbedit.
 set vb                          " turn on the "visual bell" - which is much quieter than the "audio blink"
 set ruler                       " show the cursor position all the time
@@ -337,3 +338,10 @@ function! <SID>StripTrailingWhitespace()
     call cursor(l, c)
 endfunction
 nmap <silent> <Leader><space> :call <SID>StripTrailingWhitespace()<CR>
+
+" Edit the newest file in a target directory
+function! EditLatestInDir(dir)
+  let file = system('echo ' . a:dir . '/$(ls -rt ' . a:dir . ' |tail -1)')
+  exec "edit " . file
+endfunction
+command! -nargs=1 Latest :call EditLatestInDir(<f-args>)
