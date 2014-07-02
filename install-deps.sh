@@ -45,7 +45,7 @@ fi
 if [[ `uname -a` == *Ubuntu* ]]; then
     $gimme autoconf bison build-essential libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev
     # while we're here, let's get some other necessary stuff
-    $gimme libmysqlclient-dev libsqlite3-dev nodejs
+    $gimme libmysqlclient-dev libsqlite3-dev nodejs nodejs-legacy
     # on Ubuntu we will also want to get the current kernel's headers (Used by virtual machine additions)
     $gimme linux-headers-`(uname -r)`
 fi

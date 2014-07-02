@@ -15,6 +15,7 @@ shopt -s histappend
 # Autocorrect typos in path names when using `cd`
 shopt -s cdspell
 
+# oh z, how I love thee
 . ~/code/z/z.sh
 
 # Enable some Bash 4 features when possible:
@@ -81,10 +82,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -111,9 +108,9 @@ fi
 # load chruby
 [[ -s /usr/local/share/chruby/chruby.sh ]] && source /usr/local/share/chruby/chruby.sh
 
-# Load ~/.extra, ~/.bash_prompt, ~/.exports, ~/.aliases and ~/.functions
-# ~/.extra can be used for settings you don’t want to commit
-for file in ~/.{extra,bash_prompt,exports,aliases,functions}; do
+# Load ~/.bash_prompt, ~/.exports, ~/.aliases, ~/.functions, ~/.extra
+# ~/.extra can be used for settings you don’t want to commit to the dotfiles repo
+for file in ~/.{bash_prompt,exports,aliases,functions,extra}; do
     [ -r "$file" ] && source "$file"
 done
 unset file

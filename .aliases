@@ -51,8 +51,15 @@ for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
     alias "$method"="lwp-request -m '$method'"
 done
 
+# tmux colors are borked unless manually forced
+alias tmux="tmux -2"
+
 # add a convenient shortcut for copying stuff into the clipboard
 alias clip="xclip -i -selection clipboard"
 
 # beep!
 alias beep='paplay $BEEP'
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='beep; notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
