@@ -91,7 +91,8 @@ augroup vimrcEx
   autocmd FileType text setlocal textwidth=78
 
 "for ruby, autoindent with two spaces, always expand tabs
-  autocmd FileType ruby,haml,eruby,yaml,html,javascript,sass,cucumber set ai sw=2 sts=2 et
+  autocmd FileType ruby,haml,eruby,yaml,html,sass,cucumber set ai sw=2 sts=2 et
+  autocmd FileType js,javascript set sw=4 sts=4 et
   autocmd FileType python set sw=4 sts=4 et
   autocmd FileType php set sw=4 sts=4 et
 
@@ -230,20 +231,34 @@ endfunction
 function! AlternateForCurrentFile()
   let current_file = expand("%")
   let new_file = current_file
-  let in_spec = match(current_file, '^spec/') != -1
+  let in_spec = match(current_file, '^spec/') != -1 || match(current_file, '^test/unit/') != -1
   let going_to_spec = !in_spec
   let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1
+  let is_js = match(current_file, '.js$') != -1
   if going_to_spec
     if in_app
       let new_file = substitute(new_file, '^app/', '', '')
     end
+    if is_js
+      let new_file = substitute(new_file, '^src/', '', '')
+    end
     let new_file = substitute(new_file, '\.e\?rb$', '_spec.rb', '')
-    let new_file = 'spec/' . new_file
+    let new_file = substitute(new_file, '\.e\?js$', '.spec.js', '')
+    if is_js
+      let new_file = 'test/unit/' . new_file
+    else
+      let new_file = 'spec/' . new_file
+    end
   else
-    let new_file = substitute(new_file, '_spec\.rb$', '.rb', '')
+    let new_file = substitute(new_file,  '_spec\.rb$', '.rb', '')
+    let new_file = substitute(new_file, '\.spec\.js$', '.js', '')
     let new_file = substitute(new_file, '^spec/', '', '')
+    let new_file = substitute(new_file, '^test/unit/', '', '')
     if in_app
       let new_file = 'app/' . new_file
+    end
+    if is_js
+      let new_file = 'src/' . new_file
     end
   endif
   return new_file
@@ -344,3 +359,6 @@ function! EditLatestInDir(dir)
   exec "edit " . file
 endfunction
 command! -nargs=1 Latest :call EditLatestInDir(<f-args>)
+
+" Ignore node_modules and bower_components in CommandT
+let g:CommandTWildIgnore=&wildignore . ",**/bower_components/*,**/node_modules/*"
