@@ -28,5 +28,7 @@
 --ignore-dir=.svn
 --ignore-dir=.idea
 --ignore-dir=vendor/bundle
+--ignore-dir=node_modules
+--ignore-dir=bower_components
 --ignore-dir=gems
 --ignore-dir=.bundle

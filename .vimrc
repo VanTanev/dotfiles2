@@ -361,4 +361,4 @@ endfunction
 command! -nargs=1 Latest :call EditLatestInDir(<f-args>)
 
 " Ignore node_modules and bower_components in CommandT
-let g:CommandTWildIgnore=&wildignore . ",**/bower_components/*,**/node_modules/*"
+let g:CommandTWildIgnore=&wildignore . ",**/bower_components/*,**/node_modules/*,**/tmp/*"
