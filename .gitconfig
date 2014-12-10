@@ -26,6 +26,7 @@
 [alias]
     st  = status -sb
     aa  = add --all
+    aaa  = add --all --intent-to-add
     ci  = commit
     co  = checkout
     df  = diff
