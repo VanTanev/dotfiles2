@@ -91,13 +91,14 @@ augroup vimrcEx
   autocmd FileType text setlocal textwidth=78
 
 "for ruby, autoindent with two spaces, always expand tabs
-  autocmd FileType ruby,haml,eruby,yaml,html,sass,cucumber set ai sw=2 sts=2 et
-  autocmd FileType js,javascript set sw=4 sts=4 et
+  autocmd FileType ruby,haml,eruby,yaml,sass,cucumber set ai sw=2 sts=2 et
+  autocmd FileType js,javascript,html set sw=4 sts=4 et
   autocmd FileType python set sw=4 sts=4 et
   autocmd FileType php set sw=4 sts=4 et
 
   autocmd! BufRead,BufNewFile *.sass setfiletype sass
 
+  autocmd BufRead *.md set ai formatoptions=tcroqn2 comments=n:&gt;
   autocmd BufRead *.mkd set ai formatoptions=tcroqn2 comments=n:&gt;
   autocmd BufRead *.markdown set ai formatoptions=tcroqn2 comments=n:&gt;
 
@@ -207,6 +208,47 @@ function! ShowRoutes()
   :normal dd
 endfunction
 map <leader>gR :call ShowRoutes()<cr>
+
+" Define the wildignore from gitignore. Primarily for CommandT
+function! Git_Repo_Cdup() " Get the relative path to repo root
+    "Ask git for the root of the git repo (as a relative '../../' path)
+    let git_top = system('git rev-parse --show-cdup')
+    let git_fail = 'fatal: Not a git repository'
+    if strpart(git_top, 0, strlen(git_fail)) == git_fail
+        " Above line says we are not in git repo. Ugly. Better version?
+        return ''
+    else
+        " Return the cdup path to the root. If already in root,
+        " path will be empty, so add './'
+        return './' . git_top
+    endif
+endfunction
+
+function! CD_Git_Root()
+    execute 'cd '.Git_Repo_Cdup()
+    let curdir = getcwd()
+    echo 'CWD now set to: '.curdir
+endfunction
+
+"let gitignore_file = Git_Repo_Cdup()
+"let gitignore_file = gitignore_file . '.gitignore'
+"let gitignore_file = substitute(gitignore_file, "\n|\r", '', 'g')
+
+let gitignore_file = '.gitignore'
+if filereadable(gitignore_file)
+    let igstring = ''
+    for oline in readfile(gitignore_file)
+        let line = substitute(oline, '\s|\n|\r', '', "g")
+        if line =~ '^#' | con | endif
+        if line == '' | con  | endif
+        if line =~ '^!' | con  | endif
+        if line =~ '/$' | let igstring .= "," . line . "*" | con | endif
+        let igstring .= "," . line
+    endfor
+    let execstring = "set wildignore=".substitute(igstring, '^,', '', "g")
+    execute execstring
+endif
+
 map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
 map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
 map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
