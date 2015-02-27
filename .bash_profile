@@ -15,6 +15,9 @@ shopt -s histappend
 # Autocorrect typos in path names when using `cd`
 shopt -s cdspell
 
+# remove the Ctrl+S TTY STOP shortcut
+stty -ixon
+
 # oh z, how I love thee
 . ~/code/z/z.sh
 
