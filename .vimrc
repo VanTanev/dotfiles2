@@ -50,6 +50,21 @@ set wildmenu
 let mapleader=","
 " Fix slow O inserts
 :set timeout timeoutlen=1000 ttimeoutlen=100
+" Normally, Vim messes with iskeyword when you open a shell file. This can
+" leak out, polluting other file types even after a 'set ft=' change. This
+" variable prevents the iskeyword change so it can't hurt anyone.
+let g:sh_noisk=1
+" Modelines (comments that set vim options on a per-file basis)
+set modeline
+set modelines=3
+" Turn folding off for real, hopefully
+set foldmethod=manual
+set nofoldenable
+" Insert only one space when joining lines that contain sentence-terminating
+" punctuation like `.`.
+set nojoinspaces
+" If a file is changed outside of vim, automatically reload it without asking
+set autoread
 
 " Setting some decent VIM settings for programming
 set ai                          " set auto-indenting on for programming
