@@ -1,5 +1,5 @@
 # case-insensitive searching
---ignore-case
+--smart-case
 
 # lexically sort filenames
 --sort-files
