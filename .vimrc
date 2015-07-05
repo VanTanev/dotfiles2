@@ -105,11 +105,14 @@ augroup vimrcEx
   autocmd!
   autocmd FileType text setlocal textwidth=78
 
-"for ruby, autoindent with two spaces, always expand tabs
+" for ruby, autoindent with two spaces, always expand tabs
   autocmd FileType ruby,haml,eruby,yaml,sass,cucumber set ai sw=2 sts=2 et
+" for js,python,php, 4 spaces
   autocmd FileType js,javascript,html set sw=4 sts=4 et
   autocmd FileType python set sw=4 sts=4 et
   autocmd FileType php set sw=4 sts=4 et
+" for make files, never expand tabs
+  autocmd FileType make setlocal noexpandtab
 
   autocmd! BufRead,BufNewFile *.sass setfiletype sass
 
