@@ -260,8 +260,18 @@ if filereadable(gitignore_file)
         if line =~ '^#' | con | endif
         if line == '' | con  | endif
         if line =~ '^!' | con  | endif
-        if line =~ '/$' | let igstring .= "," . line . "*" | con | endif
-        let igstring .= "," . line
+        if line =~ '/$' | let line = line . "**" | endif
+        " in .gitignore, we may ignore dirs with "/dir", but
+        " in wildignore we need to convert that to "dir/**"
+        if line =~ '^/\w\+$'
+          let line = substitute(line, '^/', '', '') . '/**'
+        endif
+
+        if igstring == ""
+          let igstring .= line
+        else
+          let igstring .= "," . line
+        endif
     endfor
     let execstring = "set wildignore=".substitute(igstring, '^,', '', "g")
     execute execstring

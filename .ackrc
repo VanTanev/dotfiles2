@@ -32,3 +32,4 @@
 --ignore-dir=bower_components
 --ignore-dir=gems
 --ignore-dir=.bundle
+--ignore-dir=build
