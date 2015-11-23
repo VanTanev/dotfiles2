@@ -347,7 +347,7 @@ function! RunTestFile(...)
     endif
 
 " Run the tests for the previously-marked file.
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\)$') != -1
+    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|spec.js\)$') != -1
     if in_test_file
         call SetTestFile()
     elseif !exists("t:grb_test_file")
@@ -369,20 +369,24 @@ endfunction
 function! RunTests(filename)
 " Write the file and run tests for the given filename
     :w
-    if match(a:filename, '\.feature$') != -1
-        if filereadable("script/features")
-            exec ":!script/features " . a:filename
-        else
-            exec ":!cucumber " . a:filename
-        end
-    else
-        if filereadable("script/test")
-            exec ":!script/test " . a:filename
-        elseif filereadable("Gemfile")
-            exec ":!bundle exec rspec --color " . a:filename
-        else
-            exec ":!rspec --color " . a:filename
-        end
+    if (match(a:filename, '\.rb$')) != -1
+      if match(a:filename, '\.feature$') != -1
+          if filereadable("script/features")
+              exec ":!script/features " . a:filename
+          else
+              exec ":!cucumber " . a:filename
+          end
+      else
+          if filereadable("script/test")
+              exec ":!script/test " . a:filename
+          elseif filereadable("Gemfile")
+              exec ":!bundle exec rspec --color " . a:filename
+          else
+              exec ":!rspec --color " . a:filename
+          end
+      end
+    elseif (match(a:filename, '\.js$')) != -1
+      exec ":!npm test " . a:filename
     end
 endfunction
 
