@@ -2,56 +2,68 @@
 set -e
 set -x
 
+WITH_RUBY=${WITH_RUBY:="0"}
+RUBY_VERSION=${RUBY_VERSION:="2.2.4"}
+
 if hash apt-get 2>/dev/null; then
-    gimme="sudo apt-get install -y"
+    gimme () { sudo apt-get install -y $@; }
+    distro="ubuntu"
 elif hash yum 2>/dev/null; then
-    gimme="sudo yum install -y"
+    gimme () { sudo yum install -y $@; }
+    distro="centos"
 elif hash brew 2>/dev/null; then
-    gimme="brew install"
+    gimme () { brew install -y $@; }
+    distro="macos"
 else
     echo "Could not determine package manager, exiting"
     exit 1
 fi
 
-$gimme git
+gimme git
 
-git submodule init
-git submodule update
+git submodule sync
+git submodule update --init --recursive
 
-$gimme curl
-$gimme wget
+gimme curl
+gimme wget
 
-if [[ `uname -a` == *Ubuntu* ]]; then
-    $gimme ack-grep
-    $gimme xclip
+if [ $distro = ubuntu ]; then
+    gimme ack-grep
+    gimme xclip
 else
-    $gimme ack
+    gimme ack
 fi
 
 # required stuff for Commant-T vim
-if [[ `uname -a` == *Ubuntu* ]]; then
-    $gimme vim-nox ruby ruby-dev
-    cd .vim/bundle/Command-T/
-    /usr/bin/rake1.9.1 make
+if [ $distro = ubuntu ] && [ "$WITH_RUBY" -ne 0 ]; then
+    gimme vim-nox ruby ruby-dev
+    (
+        cd .vim/bundle/Command-T/
+        ruby extconf.rb
+        make
+    )
 fi
 
 # https://fixubuntu.com/
-if [[ `uname -a` == *Ubuntu* ]]; then
+if [ $distro = ubuntu ]; then
     V=`/usr/bin/lsb_release -rs`; if [ $V \< 12.10 ]; then echo "Good news! Your version of Ubuntu doesn't invade your privacy."; else gsettings set com.canonical.Unity.Lenses remote-content-search none; if [ $V \< 13.10 ]; then sudo apt-get remove -y unity-lens-shopping; else gsettings set com.canonical.Unity.Lenses disabled-scopes "['more_suggestions-amazon.scope', 'more_suggestions-u1ms.scope', 'more_suggestions-populartracks.scope', 'music-musicstore.scope', 'more_suggestions-ebay.scope', 'more_suggestions-ubuntushop.scope', 'more_suggestions-skimlinks.scope']"; fi; if ! grep -q productsearch.ubuntu.com /etc/hosts; then echo -e "\n127.0.0.1 productsearch.ubuntu.com" | sudo tee -a /etc/hosts >/dev/null; fi; echo "All done. Enjoy your privacy."; fi
 fi
 
 # gimme a sane build env on Ubuntu
 # https://github.com/sstephenson/ruby-build/wiki#suggested-build-environment
-if [[ `uname -a` == *Ubuntu* ]]; then
-    $gimme autoconf bison build-essential libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev
+if [ $distro = ubuntu ]; then
+    gimme autoconf bison build-essential libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev
     # while we're here, let's get some other necessary stuff
-    $gimme libmysqlclient-dev libsqlite3-dev nodejs nodejs-legacy
+    gimme libmysqlclient-dev libsqlite3-dev nodejs nodejs-legacy
     # on Ubuntu we will also want to get the current kernel's headers (Used by virtual machine additions)
-    $gimme linux-headers-`(uname -r)`
+    gimme linux-headers-`(uname -r)`
+fi
+if [ $distro = centos ]; then
+    gimme gcc bzip2 openssl-devel libyaml-devel libffi-devel readline-devel zlib-devel gdbm-devel ncurses-devel
 fi
 
-export RUBY_VERSION="2.1.2"
-sudo -s <<RUBY_INSTALL
+# if we want ruby, execute the following piece of code with sudo
+[ "$WITH_RUBY" -ne 0 ] && export RUBY_VERSION && sudo -s <<RUBY_INSTALL
     if [ ! -e /usr/local/bin/ruby-build ]; then
         mkdir -p /usr/src
         cd /usr/src
@@ -68,7 +80,7 @@ sudo -s <<RUBY_INSTALL
 
     if [ ! -d /opt/rubies/$RUBY_VERSION ]; then
         mkdir -p /opt/rubies
-        ruby-build $RUBY_VERSION /opt/rubies/$RUBY_VERSION
+        /usr/local/bin/ruby-build $RUBY_VERSION /opt/rubies/$RUBY_VERSION
         /opt/rubies/$RUBY_VERSION/bin/gem install bundler
     fi
 
@@ -105,7 +117,7 @@ if [ ! -d ~/code/z ]; then
 fi
 
 # setup solarized
-if [[ `uname -a` == *Ubuntu* ]] && [ ! -d ~/code/solarize ]; then
+if [ $distro = ubuntu ] && [ ! -d ~/code/solarize ]; then
     mkdir -p ~/code/solarize
     cd ~/code/solarize
 
@@ -119,9 +131,9 @@ if [[ `uname -a` == *Ubuntu* ]] && [ ! -d ~/code/solarize ]; then
 fi
 
 # for the c alias (syntax highlighted cat)
-$gimme python
-if [[ `uname -a` == *Ubuntu* ]]; then
-    $gimme python-setuptools
+gimme python
+if [[ $distro =~ ubuntu|centos ]]; then
+    gimme python-setuptools
 fi
 
 if ! hash pygmentize 2>/dev/null; then
