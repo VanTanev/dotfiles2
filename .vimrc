@@ -81,7 +81,7 @@ let g:solarized_termcolors=256
 colorscheme solarized
 
 " Show EOL type and last modified timestamp, right after the filename
-set statusline=%<%F%h%m%r\ [%{&ff}]\ (%{strftime(\"%H:%M\ %d/%m/%Y\",getftime(expand(\"%:p\")))})%=%l,%c%V\ %P
+:set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
 
 "------------------------------------------------------------------------------
 " Only do this part when compiled with support for autocommands.
