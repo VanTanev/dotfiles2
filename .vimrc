@@ -355,7 +355,7 @@ function! RunTestFile(...)
     endif
 
 " Run the tests for the previously-marked file.
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|spec.js\)$') != -1
+    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|spec.js\|test.js\|Test.php\)$') != -1
     if in_test_file
         call SetTestFile()
     elseif !exists("t:grb_test_file")
@@ -395,6 +395,8 @@ function! RunTests(filename)
       end
     elseif (match(a:filename, '\.js$')) != -1
       exec ":!npm test " . a:filename
+    elseif (match(a:filename, '\.php$')) != -1
+      exec ":!./vendor/bin/phpunit " . a:filename
     end
 endfunction
 
