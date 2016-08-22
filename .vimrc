@@ -81,7 +81,7 @@ let g:solarized_termcolors=256
 colorscheme solarized
 
 " Show EOL type and last modified timestamp, right after the filename
-:set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+set statusline=%<%F%h%m%r\ [%{&ff}]\ (%{strftime(\"%H:%M\ %d/%m/%Y\",getftime(expand(\"%:p\")))})%=%l,%c%V\ %P
 
 "------------------------------------------------------------------------------
 " Only do this part when compiled with support for autocommands.
@@ -108,7 +108,7 @@ augroup vimrcEx
 " for ruby, autoindent with two spaces, always expand tabs
   autocmd FileType ruby,haml,eruby,yaml,sass,cucumber set ai sw=2 sts=2 et
 " for js,python,php, 4 spaces
-  autocmd FileType js,javascript,html set sw=2 sts=2 et
+  autocmd FileType js,javascript,html set sw=4 sts=4 et
   autocmd FileType python set sw=4 sts=4 et
   autocmd FileType php set sw=4 sts=4 et
 " for make files, never expand tabs
