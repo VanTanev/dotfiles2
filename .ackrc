@@ -33,3 +33,8 @@
 --ignore-dir=gems
 --ignore-dir=.bundle
 --ignore-dir=build
+
+# ignore web minified files and source maps
+--ignore-file=match:\.min\.js$
+--ignore-file=match:\.min\.css$
+--ignore-file=match:\.map$
