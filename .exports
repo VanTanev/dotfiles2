@@ -22,9 +22,6 @@ export MANPAGER="less -X"
 # Enable LS coloring on Darwin
 export CLICOLOR=1
 
-# Always enable colored `grep` output
-export GREP_OPTIONS="--color=auto"
-
 # setup less switches
 # -F Causes less to automatically exit if the entire file can be displayed on the first screen.
 # -X With -F prevents less from displaying nothing in gnome terminal when file is less than the screen
