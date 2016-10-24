@@ -38,7 +38,7 @@ fi
 if [ $distro = ubuntu ] && [ "$WITH_RUBY" -ne 0 ]; then
     gimme vim-nox ruby ruby-dev
     (
-        cd .vim/bundle/Command-T/
+        cd .vim/bundle/Command-T/ruby/command-t
         ruby extconf.rb
         make
     )
