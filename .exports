@@ -1,4 +1,8 @@
 export EDITOR=vim
+set -o vi
+
+# add custom bin scripts to path
+export PATH="$HOME/bin:$PATH"
 
 # Erase duplicates in history
 export HISTCONTROL=erasedups

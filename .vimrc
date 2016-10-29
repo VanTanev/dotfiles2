@@ -1,4 +1,4 @@
-" " vim:set ts=2 sts=2 sw=2 expandtab:
+" vim:set ts=2 sts=2 sw=2 expandtab:
 autocmd!
 
 set shell=bash
@@ -6,6 +6,7 @@ execute pathogen#infect()
 :call pathogen#helptags()
 filetype plugin indent on
 
+set nocompatible
 " allow unsaved background buffers and remember marks/undo for them
 set hidden
 " remember more commands and search history
@@ -34,8 +35,10 @@ set winwidth=79
 
 " keep more context when scrolling off the end of a buffer
 set scrolloff=3
-" Store temporary files in a central spot
-set backup
+
+" Don't make backups at all
+set nobackup
+set nowritebackup
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 
@@ -65,6 +68,11 @@ set nofoldenable
 set nojoinspaces
 " If a file is changed outside of vim, automatically reload it without asking
 set autoread
+
+" Use the old vim regex engine (version 1, as opposed to version 2, which was
+" introduced in Vim 7.3.969). The Ruby syntax highlighting is significantly
+" slower with the new regex engine.
+set re=1
 
 " Setting some decent VIM settings for programming
 set ai                          " set auto-indenting on for programming
@@ -101,30 +109,35 @@ endif " has("autocmd")
 " CUSTOM AUTOCMDS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup vimrcEx
-" Clear all autocmds in the group
+  " Clear all autocmds in the group
   autocmd!
   autocmd FileType text setlocal textwidth=78
+  " Jump to last cursor position unless it's invalid or in an event handler
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
 
-" for ruby, autoindent with two spaces, always expand tabs
+  " for ruby, autoindent with two spaces, always expand tabs
   autocmd FileType ruby,haml,eruby,yaml,sass,cucumber set ai sw=2 sts=2 et
-" for js,python,php, 4 spaces
-  autocmd FileType js,javascript,html set sw=4 sts=4 et
-  autocmd FileType python set sw=4 sts=4 et
-  autocmd FileType php set sw=4 sts=4 et
-" for make files, never expand tabs
+  " for js,python,php, 4 spaces
+  autocmd FileType js,javascript,html,python,php set ai sw=4 sts=4 et
+
+  " for make files, never expand tabs
   autocmd FileType make setlocal noexpandtab
 
   autocmd! BufRead,BufNewFile *.sass setfiletype sass
+  autocmd! BufRead,BufNewFile *.scss setfiletype sass
 
   autocmd BufRead *.md set ai formatoptions=tcroqn2 comments=n:&gt;
   autocmd BufRead *.mkd set ai formatoptions=tcroqn2 comments=n:&gt;
   autocmd BufRead *.markdown set ai formatoptions=tcroqn2 comments=n:&gt;
 
-" Don't syntax highlight markdown because it's often wrong
+  " Don't syntax highlight markdown because it's often wrong
   autocmd! FileType mkd setlocal syn=off
 
-" Leave the return key alone when in command line windows, since it's used
-" to run commands there.
+  " Leave the return key alone when in command line windows, since it's used
+  " to run commands there.
   autocmd! CmdwinEnter * :unmap <cr>
   autocmd! CmdwinLeave * :call MapCR()
 augroup END
@@ -167,14 +180,12 @@ nnoremap <leader><leader> <c-^>
 " alternate in it.
 nnoremap <leader>s :call FocusOnFile()<cr>
 function! FocusOnFile()
-  normalo
+  tabnew %
   normalv
   normall
   call OpenTestAlternate()
   normalh
 endfunction
-" Reload in chrome
-map <leader>l :w\|:silent !reload-chrome<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -194,7 +205,7 @@ inoremap <s-tab> <c-n>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " OPEN FILES IN DIRECTORY OF CURRENT FILE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-cnoremap %% <C-R>=expand('%:h').'/'<cr>
+cnoremap <expr> %% expand('%:h').'/'
 map <leader>e :edit %%
 map <leader>v :view %%
 
