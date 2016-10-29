@@ -34,14 +34,9 @@ else
     gimme ack
 fi
 
-# required stuff for Commant-T vim
+# vim-nox for ruby support
 if [ $distro = ubuntu ] && [ "$WITH_RUBY" -ne 0 ]; then
     gimme vim-nox ruby ruby-dev
-    (
-        cd .vim/bundle/Command-T/ruby/command-t
-        ruby extconf.rb
-        make
-    )
 fi
 
 # https://fixubuntu.com/

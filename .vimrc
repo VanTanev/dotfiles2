@@ -229,86 +229,22 @@ map <leader>n :call RenameFile()<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>gr :topleft :split config/routes.rb<cr>
 function! ShowRoutes()
-" Requires 'scratch' plugin
+  " Requires 'scratch' plugin
   :topleft 100 :split __Routes__
-" Make sure Vim doesn't write __Routes__ as a file
+  " Make sure Vim doesn't write __Routes__ as a file
   :set buftype=nofile
-" Delete everything
+  " Delete everything
   :normal 1GdG
-" Put routes output in buffer
+  " Put routes output in buffer
   :0r! rake -s routes
-" Size window to number of lines (1 plus rake output length)
-  :exec ":res " . line("$")
-" Move cursor to bottom
+  " Size window to number of lines (1 plus rake output length)
+  :exec ":normal " . line("$") . "_ "
+  " Move cursor to bottom
   :normal 1GG
-" Delete empty trailing line
+  " Delete empty trailing line
   :normal dd
 endfunction
 map <leader>gR :call ShowRoutes()<cr>
-
-" Define the wildignore from gitignore. Primarily for CommandT
-function! Git_Repo_Cdup() " Get the relative path to repo root
-    "Ask git for the root of the git repo (as a relative '../../' path)
-    let git_top = system('git rev-parse --show-cdup')
-    let git_fail = 'fatal: Not a git repository'
-    if strpart(git_top, 0, strlen(git_fail)) == git_fail
-        " Above line says we are not in git repo. Ugly. Better version?
-        return ''
-    else
-        " Return the cdup path to the root. If already in root,
-        " path will be empty, so add './'
-        return './' . git_top
-    endif
-endfunction
-
-function! CD_Git_Root()
-    execute 'cd '.Git_Repo_Cdup()
-    let curdir = getcwd()
-    echo 'CWD now set to: '.curdir
-endfunction
-
-"let gitignore_file = Git_Repo_Cdup()
-"let gitignore_file = gitignore_file . '.gitignore'
-"let gitignore_file = substitute(gitignore_file, "\n|\r", '', 'g')
-
-let gitignore_file = '.gitignore'
-if filereadable(gitignore_file)
-    let igstring = ''
-    for oline in readfile(gitignore_file)
-        let line = substitute(oline, '\s|\n|\r', '', "g")
-        if line =~ '^#' | con | endif
-        if line == '' | con  | endif
-        if line =~ '^!' | con  | endif
-        if line =~ '/$' | let line = line . "**" | endif
-        " in .gitignore, we may ignore dirs with "/dir", but
-        " in wildignore we need to convert that to "dir/**"
-        if line =~ '^/\w\+$'
-          let line = substitute(line, '^/', '', '') . '/**'
-        endif
-
-        if igstring == ""
-          let igstring .= line
-        else
-          let igstring .= "," . line
-        endif
-    endfor
-    let execstring = "set wildignore=".substitute(igstring, '^,', '', "g")
-    execute execstring
-endif
-
-map <leader>gv :CommandTFlush<cr>\|:CommandT app/views<cr>
-map <leader>gc :CommandTFlush<cr>\|:CommandT app/controllers<cr>
-map <leader>gm :CommandTFlush<cr>\|:CommandT app/models<cr>
-map <leader>gh :CommandTFlush<cr>\|:CommandT app/helpers<cr>
-map <leader>gl :CommandTFlush<cr>\|:CommandT lib<cr>
-map <leader>gp :CommandTFlush<cr>\|:CommandT public<cr>
-map <leader>gs :CommandTFlush<cr>\|:CommandT public/stylesheets<cr>
-map <leader>gf :CommandTFlush<cr>\|:CommandT features<cr>
-map <leader>gg :topleft 100 :split Gemfile<cr>
-map <leader>gt :CommandTFlush<cr>\|:CommandTTag<cr>
-map <leader>f :CommandTFlush<cr>\|:CommandT<cr>
-map <leader>F :CommandTFlush<cr>\|:CommandT %%<cr>
-
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SWITCH BETWEEN TEST AND PRODUCTION CODE
@@ -411,7 +347,6 @@ function! RunTests(filename)
     end
 endfunction
 
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " OpenChangedFiles COMMAND
 " Open a split for each dirty file in git
@@ -450,5 +385,88 @@ function! EditLatestInDir(dir)
 endfunction
 command! -nargs=1 Latest :call EditLatestInDir(<f-args>)
 
-" Ignore node_modules and bower_components in CommandT
-let g:CommandTWildIgnore=&wildignore . ",**/bower_components/*,**/node_modules/*,**/tmp/*"
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Selecta Mappings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Run a given vim command on the results of fuzzy selecting from a given shell
+" command. See usage below.
+function! SelectaCommand(choice_command, selecta_args, vim_command)
+  try
+    let selection = system(a:choice_command . " | selecta " . a:selecta_args)
+    " Escape spaces in the file name. That ensures that it's a single argument
+    " when concatenated with vim_command and run with exec.
+    let selection = substitute(selection, ' ', '\\ ', "g")
+  catch /Vim:Interrupt/
+    " Swallow the ^C so that the redraw below happens; otherwise there will be
+    " leftovers from selecta on the screen
+    redraw!
+    return
+  endtry
+  redraw!
+  exec a:vim_command . " " . selection
+endfunction
+
+function! SelectaFile(path, glob)
+  let gitignore_file = '.gitignore'
+
+  let ignore_dirs = ['node_modules', 'bower_components', 'tmp']
+  let ignore_extensions = ['pyc', 'jpg', 'png', 'ttf', 'woff', 'woff2', 'eot', 'svg']
+  let ignore_files = []
+  for ext in ignore_extensions
+    call add(ignore_files, "'*." . ext . "'")
+  endfor
+
+  if filereadable(gitignore_file)
+      for oline in readfile(gitignore_file)
+          let line = substitute(oline, '\s|\n|\r', '', "g")
+
+          " skip empty lines
+          if line == '' | con  | endif
+
+          " skip negated gitignores
+          if line =~ '^#' | con | endif
+          if line =~ '^!' | con  | endif
+
+          " in .gitignore, we may ignore dirs with "/dir" or "dir/", but
+          " in find -prune we need to convert that to "dir"
+          if line =~ '^/\w\+$' || line =~ '/$'
+            call add(ignore_dirs, substitute(line, '^/\|/$', '', 'g'))
+          else
+            " if we don't match the above format, assume file
+            call add(ignore_files, line)
+          endif
+      endfor
+  endif
+
+  let prune_dirs = ''
+  for dirname in ignore_dirs
+    let prune_dirs .= ' -type d -name ' . dirname . ' -prune -o'
+  endfor
+
+  let ignore_glob = ''
+  for filename in ignore_files
+    let ignore_glob .= ' ! -iname ' . filename
+  endfor
+
+  call SelectaCommand("find " . a:path . "/* " . prune_dirs . " -type f -and -iname '" . a:glob . "' " . ignore_glob . " -print", "", ":e")
+endfunction
+
+nnoremap <leader>f :call SelectaFile(".", "*")<cr>
+nnoremap <leader>gv :call SelectaFile("app/views", "*")<cr>
+nnoremap <leader>gc :call SelectaFile("app/controllers", "*")<cr>
+nnoremap <leader>gm :call SelectaFile("app/models", "*")<cr>
+nnoremap <leader>gh :call SelectaFile("app/helpers", "*")<cr>
+nnoremap <leader>gl :call SelectaFile("lib", "*")<cr>
+nnoremap <leader>gp :call SelectaFile("public", "*")<cr>
+nnoremap <leader>gs :call SelectaFile("public/stylesheets", "*.sass")<cr>
+nnoremap <leader>gf :call SelectaFile("features", "*")<cr>
+
+"Fuzzy select
+function! SelectaIdentifier()
+  " Yank the word under the cursor into the z register
+  normal "zyiw
+  " Fuzzy match files in the current directory, starting with the word under
+  " the cursor
+  call SelectaCommand("find * -type f", "-s " . @z, ":e")
+endfunction
+nnoremap <c-g> :call SelectaIdentifier()<cr>
