@@ -16,3 +16,6 @@
 [submodule ".vim/bundle/vCoolor"]
 	path = .vim/bundle/vCoolor
 	url = https://github.com/KabbAmine/vCoolor.vim.git
+[submodule ".tmux/plugins/tpm"]
+	path = .tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
