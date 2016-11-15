@@ -124,7 +124,9 @@ if [ $distro = ubuntu ] && [ ! -d ~/code/solarize ]; then
     cd gnome-terminal-colors-solarized
     ./set_dark.sh
 fi
-git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+if [ ! -d ~/.config/base16-shell ]; then
+    git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
+fi
 
 # for the c alias (syntax highlighted cat)
 gimme python
