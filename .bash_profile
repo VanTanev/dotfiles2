@@ -123,4 +123,7 @@ done
 unset file
 
 BASE16_SHELL=$HOME/.config/base16-shell/
-[ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ] && eval "$($BASE16_SHELL/profile_helper.sh)" && base16_solarized-dark
+if [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ]; then
+    eval "$($BASE16_SHELL/profile_helper.sh)"
+    _base16 "$BASE16_SHELL/scripts/base16-solarized-dark.sh" solarized-dark
+fi
