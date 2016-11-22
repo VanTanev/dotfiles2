@@ -6,6 +6,10 @@ execute pathogen#infect()
 :call pathogen#helptags()
 filetype plugin indent on
 
+" plugin settings
+let g:javascript_plugin_jsdoc = 1
+let g:javascript_plugin_ngdoc = 1
+
 set nocompatible
 " allow unsaved background buffers and remember marks/undo for them
 set hidden
