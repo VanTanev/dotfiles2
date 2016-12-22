@@ -136,6 +136,13 @@ augroup vimrcEx
   " Don't syntax highlight markdown because it's often wrong
   autocmd! FileType mkd setlocal syn=off
 
+  autocmd FileType php call PhpSyntaxOverride()
+  function! PhpSyntaxOverride()
+    hi! def link phpDocTags  phpDefine
+    hi! def link phpDocParam phpType
+    hi! def link phpDocIdentifier phpIdentifier
+  endfunction
+
   " Leave the return key alone when in command line windows, since it's used
   " to run commands there.
   autocmd! CmdwinEnter * :unmap <cr>
