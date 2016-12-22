@@ -46,7 +46,7 @@ fi
 # gimme a sane build env on Ubuntu
 # https://github.com/sstephenson/ruby-build/wiki#suggested-build-environment
 if [ $distro = ubuntu ]; then
-    gimme autoconf bison build-essential libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev
+    gimme autoconf binutils-doc bison build-essential flex gettext ncurses-dev libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev
     # while we're here, let's get some other necessary stuff
     gimme libmysqlclient-dev libsqlite3-dev nodejs nodejs-legacy
     # on Ubuntu we will also want to get the current kernel's headers (Used by virtual machine additions)
