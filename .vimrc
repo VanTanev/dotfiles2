@@ -239,33 +239,51 @@ function! OpenTestAlternate()
 endfunction
 function! AlternateForCurrentFile()
   let current_file = expand("%")
-  let new_file = current_file
   let is_js = match(current_file, '\.js$') != -1
-  let in_spec = match(current_file, '^spec/') != -1 || match(current_file, '\.spec\.js$') != -1
-  let going_to_spec = !in_spec
-  let in_app = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1
-  if going_to_spec
-    if is_js
-      let new_file = substitute(new_file, '\.js$', '.spec.js', '')
-    els
-      if in_app
-        let new_file = substitute(new_file, '^app/', '', '')
-      end
-      let new_file = substitute(new_file, '\.e\?rb$', '_spec.rb', '')
-      let new_file = 'spec/' . new_file
-    end
-  else
-    if is_js
-      let new_file = substitute(new_file, '\.spec\.js$', '.js', '')
+  let is_php = match(current_file, '\.php$') != -1
+  let is_rb = match(current_file, '\.e\?rb$') != -1
+
+  let in_test_file = match(current_file, '^spec/') != -1 || match(current_file, '\.spec\.js$') != -1 || match(current_file, 'Test\.php$') != -1
+  let in_app_subdir = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1 || match(current_file, '\<service\>') != -1
+
+  let alt_file = current_file
+  if is_js
+    if in_test_file
+      let alt_file = substitute(alt_file, '\.spec\.js$', '.js', '')
     else
-      let new_file = substitute(new_file, '_spec\.rb$', '.rb', '')
-      let new_file = substitute(new_file, '^spec/', '', '')
+      let alt_file = substitute(alt_file, '\.js$', '.spec.js', '')
+    endif
+  elseif is_php
+    if in_test_file
+      let alt_file = substitute(alt_file, '^tests/', '', '')
+      if in_app_subdir
+        let alt_file = 'app/' . alt_file
+      endif
+      let alt_file = substitute(alt_file, 'Test\.php$', '.php', '')
+    else
+      if in_app_subdir
+        let alt_file = substitute(alt_file, '^app/', '', '')
+      endif
+      let alt_file = 'tests/' . alt_file
+      let alt_file = substitute(alt_file, '\.php$', 'Test\.php', '')
+    endif
+  elseif is_rb
+    if in_test_file
+      let alt_file = substitute(alt_file, '^spec/', '', '')
+      if in_app_subdir
+        let alt_file = 'app/' . alt_file
+      endif
+      let alt_file = substitute(alt_file, '_spec\.rb$', '.rb', '')
+    else
       if in_app
-        let new_file = 'app/' . new_file
-      end
-    end
+        let alt_file = substitute(alt_file, '^app/', '', '')
+      endif
+      let alt_file = substitute(alt_file, '\.e\?rb$', '_spec.rb', '')
+      let alt_file = 'spec/' . alt_file
+    endif
   endif
-  return new_file
+
+  return alt_file
 endfunction
 nnoremap <leader>. :call OpenTestAlternate()<cr>
 
