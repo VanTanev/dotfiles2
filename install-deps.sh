@@ -81,9 +81,9 @@ fi
     if [ ! -e /usr/local/share/chruby/chruby.sh ]; then
         mkdir -p /usr/src
         cd /usr/src
-        wget -O chruby-0.3.8.tar.gz https://github.com/postmodern/chruby/archive/v0.3.8.tar.gz
-        tar -xzvf chruby-0.3.8.tar.gz
-        cd chruby-0.3.8
+        wget -O chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz
+        tar -xzvf chruby-0.3.9.tar.gz
+        cd chruby-0.3.9
         make install
         cd -
     fi
