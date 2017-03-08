@@ -6,7 +6,10 @@ alias l='ls -CF'
 
 # easier commands stuff
 alias gi='git'
-alias ack="ack-grep"
+
+if hash apt-get 2>/dev/null; then
+    alias ack="ack-grep"
+fi
 alias g='git'
 alias tu='tar zxvf'
 alias v='vim'

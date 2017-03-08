@@ -123,7 +123,7 @@ if [ $distro = ubuntu ] && [ ! -d ~/code/solarize ]; then
     cd gnome-terminal-colors-solarized
     ./set_dark.sh
 fi
-if [ ! -d ~/.config/base16-shell ]; then
+if [ $distro = ubuntu ] && [ ! -d ~/.config/base16-shell ]; then
     git clone https://github.com/chriskempson/base16-shell.git ~/.config/base16-shell
 fi
 
@@ -133,10 +133,10 @@ if [[ $distro =~ ubuntu|centos ]]; then
     gimme python-setuptools
 fi
 
-if ! hash pygmentize 2>/dev/null; then
-    sudo easy_install Pygments
-    sudo easy_install pygments-style-solarized
-fi
+# if ! hash pygmentize 2>/dev/null; then
+#     sudo easy_install Pygments
+#     sudo easy_install pygments-style-solarized
+# fi
 
 # setup pathogen
 mkdir -p ~/.vim/autoload ~/.vim/bundle; \
