@@ -244,7 +244,7 @@ function! AlternateForCurrentFile()
   let is_rb = match(current_file, '\.e\?rb$') != -1
 
   let in_test_file = match(current_file, '^spec/') != -1 || match(current_file, '\.spec\.js$') != -1 || match(current_file, 'Test\.php$') != -1
-  let in_app_subdir = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1 || match(current_file, '\<service\>') != -1
+  let in_app_subdir = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1 || match(current_file, '\<service\>') != -1 || match(current_file, '<\extensions\>') != 1
 
   let alt_file = current_file
   if is_js
@@ -255,28 +255,28 @@ function! AlternateForCurrentFile()
     endif
   elseif is_php
     if in_test_file
-      let alt_file = substitute(alt_file, '^tests/', '', '')
+      let alt_file = substitute(alt_file, 'tests/', '', '')
       if in_app_subdir
         let alt_file = 'app/' . alt_file
       endif
       let alt_file = substitute(alt_file, 'Test\.php$', '.php', '')
     else
       if in_app_subdir
-        let alt_file = substitute(alt_file, '^app/', '', '')
+        let alt_file = substitute(alt_file, 'app/', '', '')
       endif
       let alt_file = 'tests/' . alt_file
       let alt_file = substitute(alt_file, '\.php$', 'Test\.php', '')
     endif
   elseif is_rb
     if in_test_file
-      let alt_file = substitute(alt_file, '^spec/', '', '')
+      let alt_file = substitute(alt_file, 'spec/', '', '')
       if in_app_subdir
         let alt_file = 'app/' . alt_file
       endif
       let alt_file = substitute(alt_file, '_spec\.rb$', '.rb', '')
     else
       if in_app
-        let alt_file = substitute(alt_file, '^app/', '', '')
+        let alt_file = substitute(alt_file, 'app/', '', '')
       endif
       let alt_file = substitute(alt_file, '\.e\?rb$', '_spec.rb', '')
       let alt_file = 'spec/' . alt_file
