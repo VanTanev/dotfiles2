@@ -385,7 +385,7 @@ function! EditLatestInDir(dir)
   let file = system('echo ' . a:dir . '/$(ls -rt ' . a:dir . ' |tail -1)')
   exec "edit " . file
 endfunction
-command! -nargs=1 Latest :call EditLatestInDir(<f-args>)
+command! -nargs=1 -complete=dir Latest :call EditLatestInDir(<f-args>)
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Selecta Mappings
