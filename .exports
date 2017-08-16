@@ -34,3 +34,5 @@ export CLICOLOR=1
 #    like clearing the screen.
 # -R raw ASCII color escape codes (ie, preserve color)
 export LESS='-FXR'
+
+export BEEP="/usr/share/sounds/ubuntu/ringtones/Bliss.ogg"
