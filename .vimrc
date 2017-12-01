@@ -4,7 +4,7 @@
 autocmd!
 
 " polygot disables need to be before infect
-let g:polyglot_disabled = ['javascript', 'jsx']
+" let g:polyglot_disabled = ['plugin-to-disable']
 
 execute pathogen#infect()
 syntax on
