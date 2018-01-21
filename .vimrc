@@ -4,11 +4,18 @@
 autocmd!
 
 " polygot disables need to be before infect
-" let g:polyglot_disabled = ['plugin-to-disable']
+let g:polyglot_disabled = ['javascript', 'jsx']
+
+let g:ale_fixers = {
+      \   'javascript': ['eslint'],
+      \}
+let g:ale_javascript_eslint_suppress_eslintignore = 1
 
 execute pathogen#infect()
 syntax on
 filetype plugin indent on
+
+
 
 " plugin settings
 let g:javascript_plugin_jsdoc = 1
@@ -77,6 +84,7 @@ set nojoinspaces
 " introduced in Vim 7.3.969). The Ruby syntax highlighting is significantly
 " slower with the new regex engine.
 set re=1
+set regexpengine=1
 
 " Setting some decent VIM settings for programming
 set ai                          " set auto-indenting on for programming
