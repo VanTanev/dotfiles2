@@ -12,7 +12,13 @@ elif hash yum 2>/dev/null; then
     gimme () { sudo yum install -y $@; }
     distro="centos"
 elif hash brew 2>/dev/null; then
-    gimme () { brew install -y $@; }
+    gimme () {
+        if brew ls --versions "$1" >/dev/null; then
+            HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade $@ || echo 'Ignore brew upgrade error'
+        else
+            HOMEBREW_NO_AUTO_UPDATE=1 brew install $@
+        fi
+    }
     distro="macos"
 else
     echo "Could not determine package manager, exiting"
