@@ -27,7 +27,7 @@ if hash apt-get 2>/dev/null; then
 elif hash yum 2>/dev/null; then
    alias gimme='sudo yum install -y'
 elif hash brew 2>/dev/null; then
-   alias gimme='brew install'
+   alias gimme='HOMEBREW_NO_AUTO_UPDATE=1 brew install'
 fi
 
 # Easier navigation
