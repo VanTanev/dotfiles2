@@ -3,11 +3,13 @@ set -e
 set -x
 
 WITH_RUBY=${WITH_RUBY:="0"}
-RUBY_VERSION=${RUBY_VERSION:="2.2.4"}
+WITH_JS=${WITH_JS:="1"}
+RUBY_VERSION=${RUBY_VERSION:="2.5.3"}
 
 if hash apt-get 2>/dev/null; then
     gimme () { sudo apt-get install -y $@; }
     distro="ubuntu"
+    sudo apt-get update
 elif hash yum 2>/dev/null; then
     gimme () { sudo yum install -y $@; }
     distro="centos"
@@ -33,6 +35,8 @@ git submodule update --init --recursive
 gimme curl
 gimme wget
 
+gimme tmux
+
 if [ $distro = ubuntu ]; then
     gimme ack-grep
     gimme xclip
@@ -52,9 +56,10 @@ fi
 # gimme a sane build env on Ubuntu
 # https://github.com/sstephenson/ruby-build/wiki#suggested-build-environment
 if [ $distro = ubuntu ]; then
-    gimme autoconf binutils-doc bison build-essential flex gettext ncurses-dev libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev
+    # gimme autoconf binutils-doc bison build-essential flex gettext ncurses-dev libssl-dev libyaml-dev libreadline6 libreadline6-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev
+    gimme autoconf bison build-essential libyaml-dev libreadline6-dev zlib1g-dev libncurses5-dev libffi-dev libgdbm3 libgdbm-dev
     # while we're here, let's get some other necessary stuff
-    gimme libmysqlclient-dev libsqlite3-dev nodejs nodejs-legacy
+    gimme libmysqlclient-dev libsqlite3-dev nodejs
     # on Ubuntu we will also want to get the current kernel's headers (Used by virtual machine additions)
     gimme linux-headers-`(uname -r)`
 fi
@@ -94,6 +99,21 @@ fi
         cd -
     fi
 RUBY_INSTALL
+
+if [ "$WITH_JS" -ne 0 ]; then
+    # NVM
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+    # YARN
+    if [ $distro = ubuntu ]; then
+        curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+        echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+        sudo apt-get update && sudo apt-get install yarn
+    fi
+fi
 
 # https://rvm.io
 # rvm for the rubiess
