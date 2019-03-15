@@ -5,9 +5,11 @@ autocmd!
 
 " polygot disables need to be before infect
 let g:polyglot_disabled = ['javascript', 'jsx']
+let g:ale_completion_enabled = 1
 
 let g:ale_fixers = {
       \   'javascript': ['eslint'],
+      \   'php': ['php_cs_fixer'],
       \}
 let g:ale_javascript_eslint_suppress_eslintignore = 1
 
@@ -316,7 +318,7 @@ function! RunTestFile(...)
     endif
 
 " Run the tests for the previously-marked file.
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|spec.js\|test.js\|Test.php\)$') != -1
+    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|spec.js\|test.js\|Test.php\|test.tsx\)$') != -1
     if in_test_file
         call SetTestFile()
     elseif !exists("t:grb_test_file")
@@ -356,6 +358,8 @@ function! RunTests(filename)
       end
     elseif (match(a:filename, '\.js$')) != -1
       exec ":!npm test " . a:filename
+    elseif (match(a:filename, '\.tsx$')) != -1
+      exec ":!./node_modules/.bin/react-scripts test --no-watch " . a:filename
     elseif (match(a:filename, '\.php$')) != -1
       exec ":!./vendor/bin/phpunit " . a:filename
     end
