@@ -107,6 +107,17 @@ if ! shopt -oq posix; then
   fi
 fi
 
+if type brew &>/dev/null; then
+  for COMPLETION in $(brew --prefix)/etc/bash_completion.d/*
+  do
+    [[ -f $COMPLETION ]] && source "$COMPLETION"
+  done
+  if [[ -f $(brew --prefix)/etc/profile.d/bash_completion.sh ]];
+  then
+    source "$(brew --prefix)/etc/profile.d/bash_completion.sh"
+  fi
+fi
+
 # http://stackoverflow.com/questions/13804382/how-to-automatically-run-bin-bash-login-automatically-in-the-embeded-termin
 # [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
