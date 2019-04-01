@@ -254,10 +254,12 @@ endfunction
 function! AlternateForCurrentFile()
   let current_file = expand("%")
   let is_js = match(current_file, '\.js$') != -1
+  let is_ts = match(current_file, '\.ts$') != -1
+  let is_tsx = match(current_file, '\.tsx$') != -1
   let is_php = match(current_file, '\.php$') != -1
   let is_rb = match(current_file, '\.e\?rb$') != -1
 
-  let in_test_file = match(current_file, '^spec/') != -1 || match(current_file, '\.spec\.js$') != -1 || match(current_file, 'Test\.php$') != -1
+  let in_test_file = match(current_file, '^spec/') != -1 || match(current_file, '\.spec\.js$') != -1 || match(current_file, 'Test\.php$') != -1 || match(current_file, '\.test\.tsx\=$') != -1
   let in_app_subdir = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1 || match(current_file, '\<service\>') != -1 || match(current_file, '<\extensions\>') != 1
 
   let alt_file = current_file
@@ -266,6 +268,18 @@ function! AlternateForCurrentFile()
       let alt_file = substitute(alt_file, '\.spec\.js$', '.js', '')
     else
       let alt_file = substitute(alt_file, '\.js$', '.spec.js', '')
+    endif
+  elseif is_ts
+    if in_test_file
+      let alt_file = substitute(alt_file, '\.test.ts$', '.ts', '')
+    else
+      let alt_file = substitute(alt_file, '\.ts$', '.test.ts', '')
+    endif
+  elseif is_tsx
+    if in_test_file
+      let alt_file = substitute(alt_file, '\.test.tsx$', '.tsx', '')
+    else
+      let alt_file = substitute(alt_file, '\.tsx$', '.test.tsx', '')
     endif
   elseif is_php
     if in_test_file
