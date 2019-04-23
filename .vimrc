@@ -9,6 +9,7 @@ let g:ale_completion_enabled = 1
 
 let g:ale_fixers = {
       \   'javascript': ['eslint'],
+      \   'typescript': ['prettier', 'eslint'],
       \   'php': ['php_cs_fixer'],
       \}
 let g:ale_javascript_eslint_suppress_eslintignore = 1
@@ -254,12 +255,11 @@ endfunction
 function! AlternateForCurrentFile()
   let current_file = expand("%")
   let is_js = match(current_file, '\.js$') != -1
-  let is_ts = match(current_file, '\.ts$') != -1
-  let is_tsx = match(current_file, '\.tsx$') != -1
+  let is_ts = match(current_file, '\.tsx\?$') != -1
   let is_php = match(current_file, '\.php$') != -1
   let is_rb = match(current_file, '\.e\?rb$') != -1
 
-  let in_test_file = match(current_file, '^spec/') != -1 || match(current_file, '\.spec\.js$') != -1 || match(current_file, 'Test\.php$') != -1 || match(current_file, '\.test\.tsx\=$') != -1
+  let in_test_file = match(current_file, '^spec/') != -1 || match(current_file, '\.spec\.js$') != -1 || match(current_file, 'Test\.php$') != -1 || match(current_file, '__tests__') != -1
   let in_app_subdir = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1 || match(current_file, '\<service\>') != -1 || match(current_file, '<\extensions\>') != 1
 
   let alt_file = current_file
@@ -271,15 +271,10 @@ function! AlternateForCurrentFile()
     endif
   elseif is_ts
     if in_test_file
-      let alt_file = substitute(alt_file, '\.test.ts$', '.ts', '')
+      let alt_file = substitute(alt_file, '__tests__/', '', '')
     else
-      let alt_file = substitute(alt_file, '\.ts$', '.test.ts', '')
-    endif
-  elseif is_tsx
-    if in_test_file
-      let alt_file = substitute(alt_file, '\.test.tsx$', '.tsx', '')
-    else
-      let alt_file = substitute(alt_file, '\.tsx$', '.test.tsx', '')
+      let basename = expand('%:t:r') . '.' . expand('%:e')
+      let alt_file = substitute(alt_file, basename, '__tests__/' . basename, '')
     endif
   elseif is_php
     if in_test_file
@@ -332,7 +327,7 @@ function! RunTestFile(...)
     endif
 
 " Run the tests for the previously-marked file.
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|spec.js\|test.js\|Test.php\|test.tsx\)$') != -1
+    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|spec.js\|test.js\|Test.php\|test.tsx\|__tests__\)$') != -1
     if in_test_file
         call SetTestFile()
     elseif !exists("t:grb_test_file")
