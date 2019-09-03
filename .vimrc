@@ -475,7 +475,7 @@ function! SelectaFile(path, glob)
     let ignore_glob .= ' ! -iname ' . filename
   endfor
 
-  call SelectaCommand("find " . a:path . "/* " . prune_dirs . " -type f -and -iname '" . a:glob . "' " . ignore_glob . " -print", "", ":e")
+  call SelectaCommand("find " . a:path . "/* " . prune_dirs . " -type f -and -iname '" . a:glob . "' " . ignore_glob . " -print 2>/dev/null", "", ":e")
 endfunction
 
 nnoremap <leader>f :call SelectaFile(".", "*")<cr>
