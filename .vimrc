@@ -129,9 +129,9 @@ augroup vimrcEx
   " for make files, never expand tabs
   autocmd FileType make setlocal noexpandtab
 
-  autocmd! BufRead,BufNewFile *.sass setfiletype sass
-  autocmd! BufRead,BufNewFile *.scss setfiletype sass
-  autocmd! BufRead,BufNewFile *.tsx setfiletype typescript.tsx
+  autocmd! BufRead,BufNewFile *.sass set filetype=sass
+  autocmd! BufRead,BufNewFile *.scss set filetype=sass
+  autocmd! BufRead,BufNewFile *.tsx  set filetype=typescript.tsx
 
   autocmd BufRead *.md set ai formatoptions=tcroqn2 comments=n:&gt;
   autocmd BufRead *.mkd set ai formatoptions=tcroqn2 comments=n:&gt;
@@ -139,7 +139,7 @@ augroup vimrcEx
 
   " Treat ngdoc (Angular Doc) as markdown. It's close enough.
   autocmd BufRead *.ngdoc set ai formatoptions=tcroqn2 comments=n:&gt;
-  autocmd! BufRead,BufNewFile *.ngdoc setfiletype markdown
+  autocmd! BufRead,BufNewFile *.ngdoc set filetype=markdown
 
   " Don't syntax highlight markdown because it's often wrong
   autocmd! FileType mkd setlocal syn=off
