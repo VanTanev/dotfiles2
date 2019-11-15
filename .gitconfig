@@ -27,51 +27,26 @@
     st  = status -sb
     aa  = add --all
     aaa  = add --all --intent-to-add
-    ci  = commit
+    ci  = commit --verbose
     co  = checkout
     df  = diff
     dfw = diff --word-diff
     dc  = diff --cached
     dcw = diff --cached --word-diff
-    ig  =!([ ! -e .gitignore ] && touch .gitignore) | echo $1 >>.gitignore
     alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
     amend = commit --amend
     famend = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
-    h   = !git head
-    l   = "!. ~/.githelpers && pretty_git_log"
-    la  = !git l --all
-    r   = !git l -20
-    ra  = !git r --all
     ff  = merge --ff-only
     pullff = pull --ff-only
     noff = merge --no-ff
     fp  = fetch --prune
+    fa  = fetch --all
     po  = push origin
     pom = push origin master
     pod = push origin develop
-    br  = branch
-    tagdate = !git tag `date "+%Y%m%d%H%M"`
-
-    # Show status and diff of dirty submodules
-    subdiff = !"git submodule foreach --recursive --quiet '[ \"$(git status -s)\" ] && echo \"--- $name ---\" && git status -s && git diff --unified=1 || :'"
-
-    # Pull all submodules
-    subpull = !"git submodule foreach git pull"
-
-    # Update all submodules
-    subupdate = !"git submodule sync && git submodule update --init --recursive"
-
-    # Checkout master branch of all submodules
-    subcheckout = !"git submodule foreach git checkout master"
-
-    # Reset all submodules
-    subreset = !"git submodule foreach --recursive git checkout -- . && git submodule foreach --recursive git clean -f"
-
-    # show list of contributors in descending order by number of commits
-    rank = shortlog -sn --no-merges
-
-    # given any git object, try to show it briefly
-    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    br  = b
+    ds  = diff --stat=160,120
+    dh1 = diff HEAD~1
 
     # Search for a given string in all patches and print commit messages
     # example: search for any commit that adds or removes string "foobar"
@@ -81,12 +56,35 @@
     # example: search commits for "foobar", print full diff of commit with 1 line context
     #     git searchcommits foobar --pickaxe-all -U1 src/lib
     searchcommits = "!f() { query=\"$1\"; shift; git log -S\"$query\" \"$@\"; }; f \"$@\""
+    # Divergence (commits we added and commits remote added)
+    div = divergence
 
+    # Goodness (summary of diff lines added/removed/total)
+    gn = goodness
+    gnc = goodness --cached
+
+    # Fancy logging.
+    #   h = head
+    #   hp = head with patch
+    #   r = recent commits, only current branch
+    #   ra = recent commits, all reachable refs
+    #   l = all commits, only current branch
+    #   la = all commits, all reachable refs
+    #   b = all branches
+    #   bs = all branches, sorted by last commit date
+    head = !git r -1
+    h = !git head
+    hp = "!. ~/.githelpers && show_git_head"
+    r = !GIT_NO_PAGER=1 git l -30
+    ra = !git r --all
+    l = "!. ~/.githelpers && pretty_git_log"
+    la = !git l --all
+    b = "!. ~/.githelpers && pretty_git_branch"
+    bs = "!. ~/.githelpers && pretty_git_branch_sorted"
 [gui]
     encoding = utf-8
 [push]
     default = upstream
-
 
 # Any GitHub repo with my username should be checked out r/w by default
 # http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
