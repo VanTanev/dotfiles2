@@ -44,7 +44,7 @@
     po  = push origin
     pom = push origin master
     pod = push origin develop
-    br  = b
+    br  = branch
     ds  = diff --stat=160,120
     dh1 = diff HEAD~1
 
