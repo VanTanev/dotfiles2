@@ -306,11 +306,9 @@ nnoremap <leader>. :call OpenTestAlternate()<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RUNNING TESTS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>t :call RunTestFile()<cr>
-map <leader>T :call RunNearestTest()<cr>
-map <leader>a :call RunTests('')<cr>
-map <leader>c :w\|:!script/features<cr>
-map <leader>w :w\|:!script/features --profile wip<cr>
+nnoremap <leader>t :call RunTestFile()<cr>
+nnoremap <leader>T :call RunNearestTest()<cr>
+nnoremap <leader>a :call RunTests('')<cr>
 
 function! RunTestFile(...)
     if a:0
@@ -320,13 +318,13 @@ function! RunTestFile(...)
     endif
 
 " Run the tests for the previously-marked file.
-    let in_test_file = match(expand("%"), '\(.feature\|_spec.rb\|spec.js\|test.js\|Test.php\|test.tsx\|__tests__\)$') != -1
+    let in_test_file = match(expand("%"), '\(_spec.rb\|_test.rb\|test_.*\.py\|_test.py\|.test.ts\|__tests__.*\.tsx\=\)$') != -1
     if in_test_file
-        call SetTestFile()
+        call SetTestFile(command_suffix)
     elseif !exists("t:grb_test_file")
         return
     end
-    call RunTests(t:grb_test_file . command_suffix)
+    call RunTests(t:grb_test_file)
 endfunction
 
 function! RunNearestTest()
@@ -334,36 +332,35 @@ function! RunNearestTest()
     call RunTestFile(":" . spec_line_number)
 endfunction
 
-function! SetTestFile()
-" Set the spec file that tests will be run for.
-    let t:grb_test_file=@%
+function! SetTestFile(command_suffix)
+    " Set the spec file that tests will be run for.
+    let t:grb_test_file=@% . a:command_suffix
 endfunction
 
 function! RunTests(filename)
-" Write the file and run tests for the given filename
-    :w
-    if (match(a:filename, '\.rb$')) != -1
-      if match(a:filename, '\.feature$') != -1
-          if filereadable("script/features")
-              exec ":!script/features " . a:filename
-          else
-              exec ":!cucumber " . a:filename
-          end
-      else
-          if filereadable("script/test")
-              exec ":!script/test " . a:filename
-          elseif filereadable("Gemfile")
-              exec ":!bundle exec rspec --color " . a:filename
-          else
-              exec ":!rspec --color " . a:filename
-          end
-      end
-    elseif (match(a:filename, '\.js$')) != -1
-      exec ":!npm test " . a:filename
-    elseif (match(a:filename, '\.tsx\?$')) != -1
-      exec ":!./node_modules/.bin/react-scripts test --no-watch " . a:filename
-    elseif (match(a:filename, '\.php$')) != -1
-      exec ":!./vendor/bin/phpunit " . a:filename
+    " Write the file and run tests for the given filename
+    if expand("%") != ""
+      :w
+    end
+    " The file is executable; assume we should run
+    if executable(a:filename)
+      exec ":!./" . a:filename
+    " Project-specific test script
+    elseif filereadable("bin/test")
+      exec ":!bin/test " . a:filename
+    " Rspec binstub
+    elseif filereadable("bin/rspec")
+      exec ":!bin/rspec " . a:filename
+    " Fall back to a blocking test run with Bundler
+    elseif filereadable("bin/rspec")
+      exec ":!bin/rspec --color " . a:filename
+    elseif filereadable("Gemfile") && strlen(glob("spec/**/*.rb"))
+      exec ":!bundle exec rspec --color " . a:filename
+    elseif filereadable("Gemfile") && strlen(glob("test/**/*.rb"))
+      exec ":!bin/rails test " . a:filename
+    " If we see python-looking tests, assume they should be run with Nose
+    elseif strlen(glob("test/**/*.py") . glob("tests/**/*.py"))
+      exec "!nosetests " . a:filename
     end
 endfunction
 
