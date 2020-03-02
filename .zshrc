@@ -68,7 +68,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git z nvm)
+plugins=(git z nvm node yarn npm aws)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -135,6 +135,12 @@ if [ -x /usr/bin/dircolors ]; then
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
+fi
+
+BASE16_SHELL=$HOME/.config/base16-shell/
+if [ -n "$PS1" ] && [ -s $BASE16_SHELL/profile_helper.sh ]; then
+    eval "$($BASE16_SHELL/profile_helper.sh)"
+    _base16 "$BASE16_SHELL/scripts/base16-solarized-dark.sh" solarized-dark
 fi
 
 for file in ~/.{bash_prompt,exports,aliases,functions,extra}; do
