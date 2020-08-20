@@ -191,16 +191,8 @@ function! MapCR()
 endfunction
 call MapCR()
 nnoremap <leader><leader> <c-^>
-" Close all other windows, open a vertical split, and open this file's test
-" alternate in it.
-nnoremap <leader>s :call FocusOnFile()<cr>
-function! FocusOnFile()
-  tabnew %
-  normalv
-  normall
-  call OpenTestAlternate()
-  normalh
-endfunction
+" Close all other splits
+nnoremap <leader>o :only<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MULTIPURPOSE TAB KEY
@@ -224,11 +216,9 @@ inoremap <expr> <tab> InsertTabWrapper()
 inoremap <s-tab> <c-n>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" OPEN FILES IN DIRECTORY OF CURRENT FILE
+" SHORTCUT TO REFERENCE CURRENT FILE'S PATH IN COMMAND LINE MODE
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 cnoremap <expr> %% expand('%:h').'/'
-map <leader>e :edit %%
-map <leader>v :view %%
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RENAME CURRENT FILE
@@ -401,12 +391,24 @@ function! <SID>StripTrailingWhitespace()
 endfunction
 nmap <silent> <Leader><space> :call <SID>StripTrailingWhitespace()<CR>
 
-" Edit the newest file in a target directory
-function! EditLatestInDir(dir)
-  let file = system('echo ' . a:dir . '/$(ls -rt ' . a:dir . ' |tail -1)')
-  exec "edit " . file
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" RemoveFancyCharacters COMMAND
+" Remove smart quotes, etc.
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! RemoveFancyCharacters()
+    let typo = {}
+    let typo["“"] = '"'
+    let typo["”"] = '"'
+    let typo["‘"] = "'"
+    let typo["’"] = "'"
+    let typo["–"] = '--'
+    let typo["—"] = '---'
+    let typo["…"] = '...'
+    :exe ":%s/".join(keys(typo), '\|').'/\=typo[submatch(0)]/ge'
 endfunction
-command! -nargs=1 -complete=dir Latest :call EditLatestInDir(<f-args>)
+command! RemoveFancyCharacters :call RemoveFancyCharacters()
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Selecta Mappings
@@ -429,52 +431,12 @@ function! SelectaCommand(choice_command, selecta_args, vim_command)
   exec a:vim_command . " " . selection
 endfunction
 
-function! SelectaFile(path, glob)
-  let gitignore_file = '.gitignore'
-
-  let ignore_dirs = ['node_modules', 'bower_components', 'tmp']
-  let ignore_extensions = ['pyc', 'jpg', 'png', 'ttf', 'woff', 'woff2', 'eot', 'svg']
-  let ignore_files = []
-  for ext in ignore_extensions
-    call add(ignore_files, "'*." . ext . "'")
-  endfor
-
-  if filereadable(gitignore_file)
-      for oline in readfile(gitignore_file)
-          let line = substitute(oline, '\s|\n|\r', '', "g")
-
-          " skip empty lines
-          if line == '' | con  | endif
-
-          " skip negated gitignores
-          if line =~ '^#' | con | endif
-          if line =~ '^!' | con  | endif
-
-          " in .gitignore, we may ignore dirs with "/dir" or "dir/", but
-          " in find -prune we need to convert that to "dir"
-          if line =~ '^/\w\+$' || line =~ '/$'
-            call add(ignore_dirs, substitute(line, '^/\|/$', '', 'g'))
-          else
-            " if we don't match the above format, assume file
-            call add(ignore_files, line)
-          endif
-      endfor
-  endif
-
-  let prune_dirs = ''
-  for dirname in ignore_dirs
-    let prune_dirs .= ' -type d -name ' . dirname . ' -prune -o'
-  endfor
-
-  let ignore_glob = ''
-  for filename in ignore_files
-    let ignore_glob .= ' ! -iname ' . filename
-  endfor
-
-  call SelectaCommand("find " . a:path . "/* " . prune_dirs . " -type f -and -iname '" . a:glob . "' " . ignore_glob . " -print 2>/dev/null", "", ":e")
+function! SelectaFile(path, glob, command)
+  call SelectaCommand("find " . a:path . "/* -type f -and -not -path '*/node_modules/*' -and -not -path '*/_build/*' -and -not -path '*/build/*' -and -not -path '*/dist/*' -and -iname '" . a:glob . "' -and -not -iname '*.pyc' -and -not -ipath '*/tmp/*' -and -not -iname '*.png' -and -not -iname '*.jpg' -and -not -iname '*.eps' -and -not -iname '*.pdf' -and -not -iname '*.svg' -and -not -iname '*.ttf'", "", a:command)
 endfunction
 
-nnoremap <leader>f :call SelectaFile(".", "*")<cr>
+nnoremap <leader>f :call SelectaFile(".", "*", ":edit")<cr>
+
 
 "Fuzzy select
 function! SelectaIdentifier()
