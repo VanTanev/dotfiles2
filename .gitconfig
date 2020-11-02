@@ -47,6 +47,7 @@
     br  = branch
     ds  = diff --stat=160,120
     dh1 = diff HEAD~1
+    please = push --force-with-lease
 
     # Search for a given string in all patches and print commit messages
     # example: search for any commit that adds or removes string "foobar"
