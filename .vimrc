@@ -243,12 +243,21 @@ function! OpenTestAlternate()
 endfunction
 function! AlternateForCurrentFile()
   let current_file = expand("%")
+
+  if filereadable("bin/test_alternative_for_file")
+    let alt_file = system("bin/test_alternative_for_file " . current_file)
+    return alt_file
+  end
+
   let is_js = match(current_file, '\.js$') != -1
   let is_ts = match(current_file, '\.tsx\?$') != -1
   let is_php = match(current_file, '\.php$') != -1
   let is_rb = match(current_file, '\.e\?rb$') != -1
 
-  let in_test_file = match(current_file, '^spec/') != -1 || match(current_file, '\.spec\.js$') != -1 || match(current_file, 'Test\.php$') != -1 || match(current_file, '__tests__') != -1
+  let in_test_file = match(current_file, '^spec/') != -1
+        \ || match(current_file, '\.spec\.js$') != -1
+        \ || match(current_file, 'Test\.php$') != -1
+        \ || match(current_file, '__tests__') != -1
   let in_app_subdir = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1 || match(current_file, '\<service\>') != -1 || match(current_file, '<\extensions\>') != 1
 
   let alt_file = current_file
@@ -341,7 +350,9 @@ function! RunTests(filename)
     " The file is executable; assume we should run
     if executable(a:filename)
       exec ":!./" . a:filename
-    " Project-specific test script
+    " Project-specific test scripts
+    elseif filereadable("bin/test_single")
+      exec ":!bin/test_single " . a:filename
     elseif filereadable("bin/test")
       exec ":!bin/test " . a:filename
     " Rspec binstub
