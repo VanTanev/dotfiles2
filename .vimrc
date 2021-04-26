@@ -350,9 +350,9 @@ function! RunTests(filename)
     " The file is executable; assume we should run
     if executable(a:filename)
       exec ":!./" . a:filename
-    " Project-specific test scripts
-    elseif filereadable("bin/test_single")
-      exec ":!bin/test_single " . a:filename
+    " " Project-specific test scripts
+    " elseif filereadable("bin/test_single")
+    "   exec ":!bin/test_single " . a:filename
     elseif filereadable("bin/test")
       exec ":!bin/test " . a:filename
     " Rspec binstub
