@@ -53,11 +53,22 @@ set winwidth=79
 " keep more context when scrolling off the end of a buffer
 set scrolloff=3
 
-" Don't make backups at all
-set nobackup
-set nowritebackup
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+
+" ===== Instead of backing up files, just reload the buffer when it changes. =====
+" The buffer is an in-memory representation of a file, it's what you edit
+set autoread                         " Auto-reload buffers when file changed on disk
+set nobackup                         " Don't use backup files
+set nowritebackup                    " Don't backup the file while editing
+set noswapfile                       " Don't create swapfiles for new buffers
+set updatecount=0                    " Don't try to write swapfiles after some number of updates
+set backupskip=/tmp/*,/private/tmp/* " Let me edit crontab files
+" Use persistent history.
+if !isdirectory("/tmp/.vim-undo-dir")
+    call mkdir("/tmp/.vim-undo-dir", "", 0700)
+endif
+set undodir=/tmp/.vim-undo-dir
+set undofile
+
 
 " display incomplete commands
 set showcmd
@@ -470,10 +481,6 @@ set hidden
 
 " Smaller updatetime for CursorHold & CursorHoldI
 set updatetime=300
-
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
 
 " Better display for messages
 " set cmdheight=2
