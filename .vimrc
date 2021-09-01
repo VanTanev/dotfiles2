@@ -334,7 +334,9 @@ function! RunTestFile(...)
     endif
 
 " Run the tests for the previously-marked file.
-    let in_test_file = match(expand("%"), '\(_spec.rb\|_test.rb\|test_.*\.py\|_test.py\|.test.tsx*\|__tests__.*\.tsx\=\)$') != -1
+    let in_test_file = match(expand("%"), '\(spec.\(tsx\=\|jsx\=\|rb\)\|_test.rb\|test_.*\.py\|_test.py\|.test.tsx*\|__tests__.*\.tsx\=\|__tests__.*\.jsx\=\)$') != -1
+    echo in_test_file
+    echo 'wat'
     if in_test_file
         call SetTestFile(command_suffix)
     elseif !exists("t:grb_test_file")
