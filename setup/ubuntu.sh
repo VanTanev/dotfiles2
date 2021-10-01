@@ -8,7 +8,9 @@ sudo apt install -y \
     shellcheck \
     curl \
     zsh \
-    ruby
+    ruby \
+    wget
+
 git submodule sync
 git submodule update --init --recursive
 
@@ -30,7 +32,7 @@ if [ ! -d ~/.vim/pack/coc/start ]; then
     git clone --branch release https://github.com/neoclide/coc.nvim.git --depth=1
 fi
 
-if ! command -v docker; then
+if ! command -v docker > /dev/null; then
     sudo apt-get install -y \
         apt-transport-https \
         ca-certificates \
@@ -49,7 +51,7 @@ if ! command -v docker; then
     docker --version
 fi
 
-if ! command -v docker-compose; then
+if ! command -v docker-compose > /dev/null; then
     sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
     sudo curl \
@@ -62,9 +64,25 @@ if [ "/bin/bash" = "$SHELL" ]; then
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 fi
 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+if [ ! -d "$NVM_DIR" ]; then
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    # shellcheck source=/dev/null
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    echo 'Node version to install:'
+    read -r NODE_VERSION_TO_INSTALL
+    nvm install "$NODE_VERSION_TO_INSTALL"
+    npm i -g yarn
+fi
+
+if ! command -v hyperfine > /dev/null; then
+    wget https://github.com/sharkdp/hyperfine/releases/download/v1.11.0/hyperfine_1.11.0_amd64.deb -P /tmp
+    sudo dpkg -i /tmp/hyperfine_1.11.0_amd64.deb
+fi
 
 # setup pathogen
 mkdir -p ~/.vim/autoload ~/.vim/bundle; \
 curl -LSso ~/.vim/autoload/pathogen.vim \
     https://raw.github.com/tpope/vim-pathogen/master/autoload/pathogen.vim
+
+echo 'SUCCESS!'
