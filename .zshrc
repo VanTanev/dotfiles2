@@ -103,6 +103,7 @@ source $ZSH/oh-my-zsh.sh
 export PATH=/usr/local/sbin:/usr/local/bin:${PATH}
 export PATH="$HOME/bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
+export PATH=~/.local/bin:$PATH
 
 # Nicer history
 export HISTSIZE=100000

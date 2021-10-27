@@ -9,7 +9,11 @@ sudo apt install -y \
     curl \
     zsh \
     ruby \
-    wget
+    wget \
+    tree \
+    htop \
+    silversearcher-ag \
+    python3-pip
 
 git submodule sync
 git submodule update --init --recursive
@@ -25,6 +29,14 @@ if [ ! -d ~/code/z ]; then
     # z binary is already referenced from .bash_profile
 fi
 
+if ! command -v fd > /dev/null; then
+    sudo apt install -y fd-find
+    ln -s $(which fdfind) ~/.local/bin/fd
+fi
+
+if ! command -v aws > /dev/null; then
+    pip3 install awscli --upgrade --user
+fi
 # coc.nvim
 if [ ! -d ~/.vim/pack/coc/start ]; then
     mkdir -p ~/.vim/pack/coc/start
