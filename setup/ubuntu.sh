@@ -13,7 +13,8 @@ sudo apt install -y \
     tree \
     htop \
     silversearcher-ag \
-    python3-pip
+    python3-pip \
+    jq
 
 git submodule sync
 git submodule update --init --recursive
