@@ -35,9 +35,6 @@ if ! command -v fd > /dev/null; then
     ln -s $(which fdfind) ~/.local/bin/fd
 fi
 
-if ! command -v aws > /dev/null; then
-    pip3 install awscli --upgrade --user
-fi
 # coc.nvim
 if [ ! -d ~/.vim/pack/coc/start ]; then
     mkdir -p ~/.vim/pack/coc/start
