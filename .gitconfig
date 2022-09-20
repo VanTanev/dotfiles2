@@ -44,8 +44,7 @@
     fp  = fetch --prune
     fa  = fetch --all
     po  = push origin
-    pom = push origin master
-    pod = push origin develop
+    pof = push origin --force-with-lease
     br  = branch
     ds  = diff --stat=160,120
     dh1 = diff HEAD~1
