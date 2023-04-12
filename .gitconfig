@@ -21,7 +21,7 @@
 [core]
     whitespace=fix;-indent-with-non-tab,trailing-space,cr-at-eol
     autocrlf = input
-    editor = vim
+    editor = nvim
 
 [alias]
     st  = status -sb
@@ -92,8 +92,15 @@
 # Any GitHub repo with my username should be checked out r/w by default
 # http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
 [url "git@github.com:VanTanev/"]
-  insteadOf = "git://github.com/VanTanev/"
+    insteadOf = "git://github.com/VanTanev/"
 [url "git@github.com:Svatbata/"]
-  insteadOf = "git://github.com/Svatbata/"
+    insteadOf = "git://github.com/Svatbata/"
 [url "git@github.com:CollectorsQuest/"]
-  insteadOf = "git://github.com/CollectorsQuest/"
+    insteadOf = "git://github.com/CollectorsQuest/"
+
+[pull]
+    rebase = true
+[fetch]
+    prune = true
+[diff]
+    colorMoved = zebra
