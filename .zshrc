@@ -238,3 +238,13 @@ bindkey "^S" "insert-selecta-path-in-command-line"
 # tabtab source for packages
 # uninstall by removing these lines
 [[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
+
+export PNPM_HOME="/home/ivan/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+
+# bun completions
+[ -s "/home/ivan/.bun/_bun" ] && source "/home/ivan/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
