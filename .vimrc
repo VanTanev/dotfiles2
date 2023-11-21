@@ -335,8 +335,6 @@ function! RunTestFile(...)
 
 " Run the tests for the previously-marked file.
     let in_test_file = match(expand("%"), '\(spec.\(tsx\=\|jsx\=\|rb\)\|_test.rb\|test_.*\.py\|_test.py\|.test.tsx*\|__tests__.*\.tsx\=\|__tests__.*\.jsx\=\)$') != -1
-    echo in_test_file
-    echo 'wat'
     if in_test_file
         call SetTestFile(command_suffix)
     elseif !exists("t:grb_test_file")
@@ -472,12 +470,6 @@ function! SelectaIdentifier()
 endfunction
 nnoremap <c-g> :call SelectaIdentifier()<cr>
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Workaround for Copilot missing node 18 support https://github.com/orgs/community/discussions/16800
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:copilot_node_command = "~/.nvm/versions/node/v16.17.0/bin/node"
-
-
 """"""""""""""""""""""
 " COC suggested setup
 """"""""""""""""""""""
@@ -574,6 +566,7 @@ nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Run the Code Lens action on the current line.
 nmap <leader>cl  <Plug>(coc-codelens-action)
+nnoremap <leader>c :Copilot<cr>
 
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
