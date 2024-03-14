@@ -15,6 +15,15 @@ autocmd!
 " let g:ale_javascript_eslint_suppress_eslintignore = 1
 
 execute pathogen#infect()
+
+" initialize plugins
+call plug#begin('~/.vim/plugged')
+
+" Color schemes
+Plug 'jonathanfilip/vim-lucius'
+
+call plug#end()
+
 syntax on
 filetype plugin indent on
 
@@ -101,6 +110,8 @@ set showmode                    " show the current mode
 set background=light            " Use light background for solarized
 let g:solarized_termcolors=256
 colorscheme solarized
+" colorscheme lucius
+" LuciusBlack
 
 "------------------------------------------------------------------------------
 " Only do this part when compiled with support for autocommands.
@@ -143,6 +154,8 @@ augroup vimrcEx
   autocmd! BufRead,BufNewFile *.sass set filetype=sass
   autocmd! BufRead,BufNewFile *.scss set filetype=sass
   autocmd! BufRead,BufNewFile *.tsx  set filetype=typescript.tsx
+  autocmd! BufRead,BufNewFile *.mts  set filetype=typescript.ts
+  autocmd! BufRead,BufNewFile *.cjs  set filetype=typescript.js
 
   autocmd BufRead *.md set ai formatoptions=tcroqn2 comments=n:&gt;
   autocmd BufRead *.mkd set ai formatoptions=tcroqn2 comments=n:&gt;
@@ -187,7 +200,7 @@ cmap w!! w !sudo tee > /dev/null %
 " MISC KEY MAPS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 map <leader>y "*y
-" Move around splits with <c-hjkl>
+" Move around spli1ts with <c-hjkl>
 nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
@@ -261,12 +274,14 @@ function! AlternateForCurrentFile()
   end
 
   let is_js = match(current_file, '\.js$') != -1
-  let is_ts = match(current_file, '\.tsx\?$') != -1
+  let is_ts = match(current_file, '\.ts$') != -1
+  let is_tsx = match(current_file, '\.ts$') != -1
   let is_php = match(current_file, '\.php$') != -1
   let is_rb = match(current_file, '\.e\?rb$') != -1
 
   let in_test_file = match(current_file, '^spec/') != -1
         \ || match(current_file, '\.spec\.js$') != -1
+        \ || match(current_file, '\.test\.tsx\?$') != -1
         \ || match(current_file, 'Test\.php$') != -1
         \ || match(current_file, '__tests__') != -1
   let in_app_subdir = match(current_file, '\<controllers\>') != -1 || match(current_file, '\<models\>') != -1 || match(current_file, '\<views\>') != -1 || match(current_file, '\<helpers\>') != -1 || match(current_file, '\<service\>') != -1 || match(current_file, '<\extensions\>') != 1
@@ -280,10 +295,15 @@ function! AlternateForCurrentFile()
     endif
   elseif is_ts
     if in_test_file
-      let alt_file = substitute(alt_file, '__tests__/', '', '')
+      let alt_file = substitute(alt_file, '\.test\.ts$', '.ts', '')
     else
-      let basename = expand('%:t:r') . '.' . expand('%:e')
-      let alt_file = substitute(alt_file, basename, '__tests__/' . basename, '')
+      let alt_file = substitute(alt_file, '\.ts$', '.test.ts', '')
+    endif
+  elseif is_tsx
+    if in_test_file
+      let alt_file = substitute(alt_file, '\.test\.tsx$', '.ts', '')
+    else
+      let alt_file = substitute(alt_file, '\.tsx$', '.test.tsx', '')
     endif
   elseif is_php
     if in_test_file
@@ -484,7 +504,7 @@ set updatetime=300
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
-set signcolumn=yes
+set signcolumn=no
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: There's always complete item selected by default, you may want to enable
@@ -606,7 +626,7 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings for CoCList
 " Show all diagnostics.
