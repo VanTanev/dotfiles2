@@ -117,21 +117,6 @@ let g:solarized_termcolors=256
 colorscheme solarized
 set nu
 
-""""" screencast
-"""""
-"colorscheme lucius
-"LuciusBlack
-"" au BufNewFile,BufRead * let b:copilot_enabled = 0
-"set tabstop=2
-"set shiftwidth=2
-"set softtabstop=2
-"augroup vimrcExSceencast
-"  " for js,python,php, 2 spaces
-"  autocmd FileType js,javascript,typescript,html,yaml,python,php set ai sw=2 sts=2 et
-"augroup END
-"""""
-""""" end screenshot
-
 "------------------------------------------------------------------------------
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
@@ -198,8 +183,26 @@ augroup vimrcEx
   " to run commands there.
   autocmd! CmdwinEnter * :unmap <cr>
   autocmd! CmdwinLeave * :call MapCR()
+
+  autocmd VimEnter * if @% == 'tsconfig.json' | set ft=jsonc | endif
+  autocmd VimEnter * if @% == 'tsconfig.base.json' | set ft=jsonc | endif
 augroup END
 
+
+"""" screencast
+""""
+colorscheme lucius
+LuciusBlack
+au BufNewFile,BufRead * let b:copilot_enabled = 0
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+augroup vimrcExSceencast
+  " for js,python,php, 2 spaces
+  autocmd FileType js,javascript,typescript,html,yaml,python,php set ai sw=2 sts=2 et
+augroup END
+""""
+"""" end screenshot
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " STATUS LINE
